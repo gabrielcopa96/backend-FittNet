@@ -346,78 +346,7 @@ async function updatePassword(userId, newPassword, password, secretToken) {
     }
 }
 
-// const updateUser = async (req, res) => {
-//     const { id } = req.params
-//     try {
-//         const body = req.body
-//         const user = await User.findById(id)
 
-//         //? hay que condicionar para que el address no se duplique
-//         //? preguntar si existe ya en mi base de datos un address con ese id
-//         const idInfo = user.info
-//         const userInfo = await InfoUser.findById(idInfo)
-
-//         const address = await Address.findById(userInfo.address)
-
-//         console.log("este es mi info del usuario: ", userInfo)
-
-//         console.log("este es mi address", address)
-
-//         let idAddress;
-
-//         if (address) {
-//             console.log("entro a actualizar el address")
-//             const infoAddress = {
-//                 street: body.street,
-//                 floor: body.floor,
-//                 address: body.address,
-//                 apartament: body.apartament,
-//                 neighborhood: body.neighborhood,
-//                 city: body.city,
-//                 country: body.country,
-//                 zipCode: body.zipCode
-//             }
-//             await Address.findByIdAndUpdate(userInfo.address, infoAddress, { new: true })
-//             idAddress = userInfo.address
-//         } else {
-//             console.log("no existe un address actualmente en tu info del usuario, ACTUALIZALA")
-//             const addressUser = new Address({
-//                 street: body.street,
-//                 floor: body.floor,
-//                 address: body.address,
-//                 apartament: body.apartament,
-//                 neighborhood: body.neighborhood,
-//                 city: body.city,
-//                 country: body.country,
-//                 zipCode: body.zipCode
-//             })
-//             await addressUser.save()
-//             idAddress = addressUser._id
-//         }
-//         const idAvatar = user.avatar
-//         const newInfoUser = {
-//             username: body.username,
-//             lastName: body.lastname,
-//             phone: body.phone,
-//             birthday: body.birthday,
-//             avatar: idAvatar,
-//             address: idAddress,
-//             gender: body.gender,
-//             photo: body.photo,
-//         }
-//         const updUser = await InfoUser.findByIdAndUpdate(idInfo, newInfoUser, { new: true })
-//         res.status(200).json({
-//             ok: true,
-//             updUser
-//         })
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({
-//             ok: false,
-//             msg: "no se pudo actualizar el usuario"
-//         })
-//     }
-// }
 
 module.exports = {
     findUser,
