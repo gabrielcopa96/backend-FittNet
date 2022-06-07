@@ -128,14 +128,14 @@ const getUserGoogleAccount = async (req, res) => {
                 $lookup: {
                     from: "avatars",
                     localField: "avatar",
-                    foreignField: "_id",
+                    foreignField: "_id", 
                     as: "avatar"
                 }
             },
             {
                 $unwind: {
                     path: '$avatar',
-                    preserveNullAndEmptyArrays: false
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
@@ -167,7 +167,7 @@ const getUserGoogleAccount = async (req, res) => {
             },
             {
                 $project: {
-                    name: 1,
+                    name: 1, //! 1 -> mostrar - 0 -> 0
                     userName: 1,
                     // latitude: 0,
                     // longitude: 0,
@@ -186,12 +186,18 @@ const getUserGoogleAccount = async (req, res) => {
                         birthday: 1,
                         phone: 1,
                         username: 1,
-                        address: 1
+                        address: {
+                            _id: 1,
+                            street: 1,
+                        }
                     }
                 }
             }
         ]);
-        console.log(user)
+<<<<<<< HEAD
+=======
+        // console.log(user)
+>>>>>>> bc4fe3490467d4239a3e79ca0308c3ca37495494
         return res.status(200).json({
             ok: true,
             user: user[0]
@@ -233,6 +239,7 @@ const googleSignIn = async (req, res) => {
                 userName: userName,
                 password: "0xoaudfj203ru09dsfu2390fdsfc90sdf2dfs",
                 type: "user",
+                active: true,
                 info: infoId
             });
         } else {
@@ -240,13 +247,16 @@ const googleSignIn = async (req, res) => {
         }
         let newUser = await usuario.save();
         // console.log (newUser, 'nuevo usuario Google')
-        let userId = newUser._id;
+        let user = {userId: newUser._id, avatar: newUser.avatar, type: newUser.type,
+                    latitude: newUser.latitude, longitude: newUser.longitude};
+        
 
         res.json({
             ok: true,
             usuario,
             googleToken,
-            userId
+            user           
+
         })
     } catch (error) {
         console.log("error: ", error);
