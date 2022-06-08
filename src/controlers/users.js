@@ -8,6 +8,7 @@ var passport = require("passport");
 const jwt_decode = require('jwt-decode');
 const bcrypt = require('bcrypt');
 const Address = require('../models/Address');
+const Diseases = require('../models/Diseases')
 
 async function findUser(userName) {
     try {
@@ -39,10 +40,48 @@ const getUser = async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        const user = await User.findById(id)
-            .populate('avatar')
-            .populate('info')
-            .populate('partner')
+        // const user = await User.findById(id)
+        //     .populate('avatar')
+        //     .populate('info')
+        //     .populate('info.address')
+        //     .populate('partner')
+        const user = await User.aggregate([
+            {
+                $match: { _id: ObjectId(id)}
+            },
+            {
+                $lookup: {
+                    from: "avatars",
+                    localField: "avatar",
+                    foreignField: "_id", 
+                    as: "avatar"
+                }
+            },
+            {
+                $lookup: {
+                    from: "infousers",
+                    localField: "info",
+                    foreignField: "_id",
+                    as: "info"
+                },                
+            },
+            {
+                $lookup: {
+                    from: "addresses",
+                    localField: "info.address",
+                    foreignField: "_id",
+                    as: "address"
+                }
+            },
+            {
+                $lookup: {
+                    from: "partners",
+                    localField: "partner",
+                    foreignField: "_id",
+                    as: "partner"
+                }
+            },
+        ])
         console.log(user)
         res.json({
             ok: true,
@@ -61,6 +100,21 @@ const updateUser = async (req, res) => {
     const { id } = req.params
     try {
         const body = req.body
+
+        const dataDesease = body.desease
+        const allDesease = await Diseases.find();
+        const igualesDeseases = allDesease.filter(x => dataDesease.some(y => y.desease === x.desease));
+        const desigualesDesease = dataDesease.filter(x => !allDesease.some(y => y.desease === x.desease));
+
+        let finallyDesease = []
+        let idDesiguales = []
+        if (desigualesDesease.length > 0) {
+            finallyDesease = await Diseases.create(desigualesDesease)
+            idDesiguales = finallyDesease.map(x => x._id);
+        }
+
+        const concatDesease = [...igualesDeseases.map(x => x._id), ...idDesiguales]
+
         const newAddressUser = {
             street: body.street,
             floor: body.floor,
@@ -72,13 +126,13 @@ const updateUser = async (req, res) => {
             zipCode: body.zipCode
         }
         const user = await User.findById(id)
-        const idAddress = user.address ? user.address : null;
+        let idAddress = user.address ? user.address : null;
         if (idAddress === null) {
             const addressUser = new Address(newAddressUser)
             await addressUser.save()
             idAddress = addressUser._id
         } else {
-            let updatedAddress = await Address.findByIdAndUpdate(idAddress, newAddressUser, { new: true })
+            await Address.findByIdAndUpdate(idAddress, newAddressUser, { new: true })
         }
         const idInfo = user.info
         const idAvatar = user.avatar
@@ -89,16 +143,18 @@ const updateUser = async (req, res) => {
             birthday: body.birthday,
             avatar: idAvatar,
             address: idAddress,
+            diseases: concatDesease,
             gender: body.gender,
             photo: body.photo,
         }
         const updUser = await InfoUser.findByIdAndUpdate(idInfo, newInfoUser, { new: true })
         res.status(200).json({
             ok: true,
-            updUser
+            updUser,
+            msg: "se creo correctamente"
         })
     } catch (error) {
-        console.log(error)
+        console.log(error, "no se creo")
         res.status(500).json({
             ok: false,
             msg: "no se pudo actualizar el usuario"
@@ -128,7 +184,7 @@ const getUserGoogleAccount = async (req, res) => {
                 $lookup: {
                     from: "avatars",
                     localField: "avatar",
-                    foreignField: "_id", 
+                    foreignField: "_id",
                     as: "avatar"
                 }
             },
@@ -166,8 +222,22 @@ const getUserGoogleAccount = async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: "diseases",
+                    localField: "info.diseases",
+                    foreignField: "_id",
+                    as: "info.diseases"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$info.diseases",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
                 $project: {
-                    name: 1, //! 1 -> mostrar - 0 -> 0
+                    name: 1,
                     userName: 1,
                     // latitude: 0,
                     // longitude: 0,
@@ -189,15 +259,12 @@ const getUserGoogleAccount = async (req, res) => {
                         address: {
                             _id: 1,
                             street: 1,
-                        }
+                        },
+                        diseases: 1
                     }
                 }
             }
         ]);
-<<<<<<< HEAD
-=======
-        // console.log(user)
->>>>>>> bc4fe3490467d4239a3e79ca0308c3ca37495494
         return res.status(200).json({
             ok: true,
             user: user[0]
@@ -247,15 +314,17 @@ const googleSignIn = async (req, res) => {
         }
         let newUser = await usuario.save();
         // console.log (newUser, 'nuevo usuario Google')
-        let user = {userId: newUser._id, avatar: newUser.avatar, type: newUser.type,
-                    latitude: newUser.latitude, longitude: newUser.longitude};
-        
+        let user = {
+            userId: newUser._id, avatar: newUser.avatar, type: newUser.type,
+            latitude: newUser.latitude, longitude: newUser.longitude
+        };
+
 
         res.json({
             ok: true,
             usuario,
             googleToken,
-            user           
+            user
 
         })
     } catch (error) {
