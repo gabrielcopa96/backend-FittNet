@@ -37,15 +37,28 @@ async function findAllUsers() {
     }
 }
 
+const getUserDetails = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id)
+        .populate('avatar')
+        .populate('favourite')
+
+    const infoUser = await InfoUser.findById(user.info)
+        .populate('diseases')
+        .populate('disease')
+        .populate('address')
+
+        res.json({
+            ok: true,
+            user,
+            infoUser
+        })
+}
+
 const getUser = async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        // const user = await User.findById(id)
-        //     .populate('avatar')
-        //     .populate('info')
-        //     .populate('info.address')
-        //     .populate('partner')
         const user = await User.aggregate([
             {
                 $match: { _id: ObjectId(id) }
@@ -351,7 +364,8 @@ const getUserGoogleAccount = async (req, res) => {
                         lastName: 1,
                         address: 1,
                         phone: 1,
-                        gender: 1
+                        gender: 1,
+                        birthday: 1
                     },
                     // info: {
                     //     name: 1,
@@ -505,6 +519,7 @@ const googleSignIn = async (req, res) => {
                 password: "0xoaudfj203ru09dsfu2390fdsfc90sdf2dfs",
                 type: "user",
                 active: true,
+                partner: 0,
                 info: infoId
             });
         } else {
@@ -525,7 +540,6 @@ const googleSignIn = async (req, res) => {
             usuario,
             googleToken,
             user
-
         })
     } catch (error) {
         console.log("error: ", error);
