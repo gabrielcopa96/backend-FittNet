@@ -41,8 +41,8 @@ router.post('/', (req, res)=>{
         installments: 1 //Maximo de cuotas
     },
     back_urls:{
-        success: 'http://localhost:3001/api/service/mercadopago/pagos',
-        failure: 'http://localhost:3001/api/service/mercadopago/pagos'
+        success: 'https://fittnet-g11.vercel.app/api/service/mercadopago/pagos',
+        failure: 'https://fittnet-g11.vercel.app/api/service/mercadopago/pagos'
     }
     }
 
@@ -76,7 +76,7 @@ router.get('/pagos', async (req, res) =>{
     await paymentCreate.save()
 
 
-    res.redirect("http://localhost:3000")
+    res.redirect("https://fittnet-g11.vercel.app/")
 
 })
 
