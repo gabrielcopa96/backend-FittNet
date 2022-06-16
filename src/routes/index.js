@@ -4,7 +4,7 @@ const routeUser = require('./user/index')
 const routeService = require('./service/index')
 const routePartner = require('./partner/index')
 const routeAdmin = require('./admin/index')
-const routeShopCart = require ('./user/ShopCart')
+const routeShopCart = require ('./user/shopCart')
 const routeStripe = require ('./user/stripe')
 const routerUser1 = require('./user')
 
