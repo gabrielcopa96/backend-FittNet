@@ -59,100 +59,6 @@ const getUser = async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        // const user = await User.aggregate([
-        //     {
-        //         $match: { _id: ObjectId(id) }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "avatars",
-        //             localField: "avatar",
-        //             foreignField: "_id",
-        //             as: "avatar"
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "infousers",
-        //             localField: "info",
-        //             foreignField: "_id",
-        //             as: "info"
-        //         },
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "addresses",
-        //             localField: "info.address",
-        //             foreignField: "_id",
-        //             as: "address"
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "partners",
-        //             localField: "partner",
-        //             foreignField: "_id",
-        //             as: "partner"
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "diseases",
-        //             localField: "info.diseases",
-        //             foreignField: "_id",
-        //             as: "info.diseases"
-        //         }
-        //     },
-        //     {
-        //         $unwind: {
-        //             path: "$info.diseases",
-        //             preserveNullAndEmptyArrays: true
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "diseasestypes",
-        //             localField: "info.diseases.desease",
-        //             foreignField: "_id",
-        //             as: "info.diseases.desease"
-        //         }
-        //     },
-        //     {
-        //         $unwind: {
-        //             path: "$info.diseases.desease",
-        //             preserveNullAndEmptyArrays: true
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             name: 1,
-        //             userName: 1,
-        //             latitude: 1,
-        //             longitude: 1,
-        //             active: 1,
-        //             secretToken: 1,
-        //             type: 1,
-        //             avatar: {
-        //                 _id: 1,
-        //                 avatarName: 1,
-        //             },
-        //             info: {
-        //                 _id: 1,
-        //                 name: 1,
-        //                 lastName: 1,
-        //                 photo: 1,
-        //                 birthday: 1,
-        //                 phone: 1,
-        //                 username: 1,
-        //                 address: {
-        //                     _id: 1,
-        //                     street: 1,
-        //                 },
-        //                 diseases: 1
-        //             }
-        //         }
-        //     }
-        // ])
         const user = await User.findById(id)
             .populate({ path: "info", populate: { path: "diseases", populate: { path: "desease", model: DiseasesType } } })
             .populate({ path: "info", populate: { path: "address" } })
@@ -198,9 +104,6 @@ const updateUser = async (req, res) => {
         const findDesTypes = await DiseasesType.find()
         const fil = findDesTypes.filter(e => dataDesease.includes(e.deseaseName))
         const deseaseId = fil.map(x => x._id);
-        console.log("mfil", fil)
-        console.log("deseaseId", deseaseId)
-        console.log("findDesTypes", findDesTypes)
         // const allDesease = await Diseases.find();
         // const igualesDeseases = allDesease.filter(x => dataDesease.some(y => y.desease === x.desease));
         // const desigualesDesease = dataDesease.filter(x => !allDesease.some(y => y.desease === x.desease));
@@ -256,7 +159,6 @@ const updateUser = async (req, res) => {
             console.log("estoy en editar un nueva direccion")
             await Address.findByIdAndUpdate(idAddress, newAddressUser, { new: true })
         }
-
         const newInfoUser = {
             username: body.username,
             lastName: body.lastname,
@@ -264,20 +166,12 @@ const updateUser = async (req, res) => {
             birthday: body.birthday,
             avatar: idAvatar,
             address: idAddress,
-            // diseases: concatDesease,
             diseases: finallyDesease._id,
             gender: body.gender,
             photo: body.photo,
         }
-
         const updUser = await InfoUser.findByIdAndUpdate(idInfo, newInfoUser, { new: true })
             .populate("address");
-
-
-        // const userInfo = await User.findById(updUser._id)
-        // .populate("info")
-        // .populate("address")
-
         res.status(200).json({
             ok: true,
             updUser,
@@ -316,7 +210,6 @@ const getUserGoogleAccount = async (req, res) => {
             user: user
         })
     } catch (error) {
-        // console.log("error: ", error);
         res.status(500).json({
             ok: false,
             msg: "Unexpected error"
@@ -347,7 +240,6 @@ const googleSignIn = async (req, res) => {
                 password: "0xoaudfj203ru09dsfu2390fdsfc90sdf2dfs",
                 type: "user",
                 active: true,
-                // partner: 0,
                 info: infoId
             });
         } else {
@@ -419,7 +311,6 @@ async function updatePassword(userId, newPassword, password, secretToken) {
                 console.log(err);
                 return done(err);
             });
-        // console.log(validation, ' qué tiene validation???')
         // validation puede ser igual a false o true (en caso de que el usuario 
         // exista y su password sea correcta)
 
