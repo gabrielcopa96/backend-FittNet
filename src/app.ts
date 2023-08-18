@@ -6,7 +6,7 @@ import session from "express-session";
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { Strategy } from "passport-local";
-import { findUser } from "./controlers/users";
+import { findUser } from "./controllers/users";
 import routes from "./routes/index";
 const { SECRET } = process.env || "http://localhost:3000";
 
@@ -68,12 +68,10 @@ passport.use(
 
 
 passport.serializeUser(function (user: any, done: any) {
-  console.log('paso dos de la autenticación')
   done(null, user._id);
 });
 
 passport.deserializeUser(function (_id: any, done: any) {
-  console.log('paso tres de la autenticación')
   findUser({ _id: _id })
     .then((user: any) => {
       done(null, user);
@@ -94,26 +92,6 @@ server.use(
 server.use(passport.initialize());
 server.use(passport.session());
 
-// Middleware para mostrar la sesión actual en cada request
-server.use((req: any, res: any, next: any) => {
-  // console.log(req.session, ' esto es req.session 120');
-  // console.log(req.user, ' esto es req.user 121');
-  next();
-});
-server.get('/login', (req: any, res: any) => {
-  res.send('Username o contraseña incorrecta');
-});
-
-
-server.use("/", routes); //! http://localhost:3000/
-
-// --- --- Error catching endware.
-server.use((err: any, req: any, res: any, next: any) => {
-  // eslint-disable-line no-unused-vars
-  const status = err.status || 500;
-  const message = err.message || err;
-  console.error(err);
-  res.status(status).send(message);
-});
+server.use("/", routes);
 
 export default server;

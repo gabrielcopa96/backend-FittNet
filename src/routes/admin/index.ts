@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import Users from '../../models/User';
 import LockAccounts from '../../models/LockAccount';
-import { regEmail } from '../../controlers/regExes';
+import { regEmail } from '../../controllers/regExes';
 import { Types } from 'mongoose';
 
 const router = Router();

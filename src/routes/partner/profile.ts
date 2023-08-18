@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { getPartner, putPartner, getAllPartners } from "../../controlers/partners";
-import { deleteUser } from '../../controlers/users';
+import { getPartner, putPartner, getAllPartners } from "../../controllers/partners";
+import { deleteUser } from '../../controllers/users';
 
 const router = Router();
 

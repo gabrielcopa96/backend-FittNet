@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getPartnerSales, getAdminSales } from "../../controlers/salesFilters";
+import { getPartnerSales, getAdminSales } from "../../controllers/salesFilters";
 
 const router = Router();
 

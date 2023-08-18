@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import Users from '../../models/User';
 import bcrypt from 'bcrypt';
-import { isValidObjectId } from '../../controlers/users';
+import { isValidObjectId } from '../../controllers/users';
 
 const router = Router();
 

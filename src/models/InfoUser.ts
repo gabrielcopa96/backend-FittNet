@@ -1,5 +1,5 @@
 import { Schema, model, SchemaTypes } from "mongoose";
-import { regWord, regEmail } from '../controlers/regExes';
+import { regWord, regEmail } from '../controllers/regExes';
 
 const infoUserSchema = new Schema({
     name: {

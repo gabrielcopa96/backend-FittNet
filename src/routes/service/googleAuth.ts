@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { googleSignIn, getUserGoogleAccount } from '../../controlers/users';
+import { googleSignIn, getUserGoogleAccount } from '../../controllers/users';
 
 const router = Router();
 

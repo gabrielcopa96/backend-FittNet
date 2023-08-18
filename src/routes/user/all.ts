@@ -1,7 +1,7 @@
 import { Router } from "express";
-import run from "../../controlers/test";
+import run from "../../controllers/test";
 import DiseasesType from '../../models/DiseasesType';
-import { findAllUsers } from "../../controlers/users";
+import { findAllUsers } from "../../controllers/users";
 
 const router = Router();
 

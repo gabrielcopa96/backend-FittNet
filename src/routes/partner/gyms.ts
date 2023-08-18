@@ -5,7 +5,7 @@ import {
   saveGyms,
   getGymById,
   getGymByName
-} from "../../controlers/gyms";
+} from "../../controllers/gyms";
 
 import Gyms from "../../models/Gyms";
 import Users from "../../models/User";

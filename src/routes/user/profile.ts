@@ -1,6 +1,6 @@
 import { Router } from "express"; 
-import { getUser, deleteUser, updateUser } from "../../controlers/users";
-import { updateFavGym } from "../../controlers/gyms";
+import { getUser, deleteUser, updateUser } from "../../controllers/users";
+import { updateFavGym } from "../../controllers/gyms";
 
 const router = Router();
 

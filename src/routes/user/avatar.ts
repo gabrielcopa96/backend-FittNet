@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { createAvatar, getAvatar, updateAvatarForUser } from '../../controlers/avatar.controllers';
+import { createAvatar, getAvatar, updateAvatarForUser } from '../../controllers/avatar.controllers';
 
 const router = Router();
 

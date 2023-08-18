@@ -1,7 +1,7 @@
 import User from "../models/User";
 import Partner from "../models/Partner";
 import Plan from "../models/Plan";
-import { postGyms } from "../controlers/gyms";
+import { postGyms } from "./gyms";
 import { putSocialMedia } from "./helpers";
 
 export const getPartner = async (req: any, res: any) => {

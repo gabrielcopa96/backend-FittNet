@@ -1,5 +1,5 @@
 import { Schema, model, SchemaTypes } from "mongoose";
-import { regEmail, regWord, regCBU, regCUIL } from '../controlers/regExes';
+import { regEmail, regWord, regCBU, regCUIL } from '../controllers/regExes';
 
 const partnerSchema = new Schema({
   name: {
