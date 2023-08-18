@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import { Schema, model, SchemaTypes } from "mongoose";
 
-const diseaseSchema = new mongoose.Schema({
+const diseaseSchema = new Schema({
     desease: {
         type: Array,
-        of: mongoose.SchemaTypes.ObjectId, 
+        of: SchemaTypes.ObjectId, 
         required: true,
     },
     trainlimits: { //limitantes de entrenamiento
@@ -14,4 +14,5 @@ const diseaseSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Diseases', diseaseSchema)
+const DiseasesModel = model('Diseases', diseaseSchema);
+export default DiseasesModel;

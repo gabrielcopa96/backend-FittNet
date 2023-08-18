@@ -1,19 +1,16 @@
-const mongoose = require('mongoose');
+import { Schema, model, Types } from "mongoose";
 
-const mongoDB = require("mongodb")
- 
-
-const userPlanSchema = new mongoose.Schema({
+const userPlanSchema = new Schema({
     planName: {
         type: String,
         required: true,
     },
     services: [String],
     price: {
-        type: mongoDB.Decimal128,        
+        type: Types.Decimal128,        
     },
     commission: {
-        type: mongoDB.Decimal128,
+        type: Types.Decimal128,
     },
     gymsPermited: {
         type: Number,
@@ -24,4 +21,5 @@ const userPlanSchema = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('Plan', userPlanSchema);
+const PlanModel = model("Plan", userPlanSchema);
+export default PlanModel;

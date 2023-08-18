@@ -1,15 +1,14 @@
-const mongoose = require('mongoose');
-const mongoDB = require('mongodb');
-const { regEmail, regWord } = require('../controlers/regExes')
+import { Schema, model, SchemaTypes, Types } from "mongoose";
+import { regEmail, regWord } from '../controlers/regExes';
 
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     name:{
         type: String,
         required: true,
         validate: {
-            validator: v => regWord.test(v),
-            message: props => `${props.value} is not a valid Name`
+            validator: (v: any) => regWord.test(v),
+            message: (props: any) => `${props.value} is not a valid Name`
         }
     },
     userName: {
@@ -19,8 +18,8 @@ const userSchema = new mongoose.Schema({
         trim: true,
         unique: true,
         validate: {
-            validator: v => regEmail.test(v),
-            message: props => `${props.value} is not a valid User Name`
+            validator: (v: any) => regEmail.test(v),
+            message: (props: any) => `${props.value} is not a valid User Name`
         }
     },
     password: {
@@ -28,10 +27,10 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     latitude: {
-        type: mongoDB.Decimal128,        
+        type: Types.Decimal128,
     },
     longitude: {
-        type: mongoDB.Decimal128,
+        type: Types.Decimal128,
     },
     active: {
         type: Boolean,
@@ -47,19 +46,19 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     avatar: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Avatar",
     },
     info: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "InfoUser"
     },
     partner: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Partner"
     },
     favourite: {
-        type: [mongoose.SchemaTypes.ObjectId],
+        type: [SchemaTypes.ObjectId],
         ref: "gyms"
     },
     createdAt: {
@@ -75,4 +74,5 @@ const userSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Users', userSchema)
+const UserModel = model('Users', userSchema);
+export default UserModel;

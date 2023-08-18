@@ -1,101 +1,70 @@
-const ObjectId = require('mongoose').Types.ObjectId
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getAllGyms,
   postGyms,
   saveGyms,
   getGymById,
   getGymByName
-} = require("../../controlers/gyms");
+} from "../../controlers/gyms";
 
-const Gyms = require("../../models/Gyms");
-const Users = require("../../models/User");
-const Partner = require("../../models/Partner");
+import Gyms from "../../models/Gyms";
+import Users from "../../models/User";
+import Partner from "../../models/Partner";
 
 
 const router = Router();
 
 // Para solicitar info de todos los gyms
-router.get("/allgyms", async (req, res) => {
+router.get("/allgyms", async (req: any, res: any) => {
   try {
     const response = await getAllGyms();
     res.status(200).send(response);
-  } catch (error) {
+  } catch (error: any) {
     res.status(404).send({ error: error.message });
   }
 });
 
-// router.get("/mygyms/:userId", async (req, res) => {
-
-//   let { userId } = req.params;
-  
-//   // console.log(userId)
-
-//   let partnerId = userId;
-
-//   try {
-//     let infoPartner = await Users.findById(partnerId)
-    
-//     if (infoPartner.partner){
-//       let idInfoPartner = infoPartner.partner;
-
-//       allGymPartner = await Partner.findById(idInfoPartner)
-//       .populate({path: "gyms", populate:{path: "services"}})
-
-//     }   
-   
-//     res.status(200).json(allGymPartner);
-//   } catch (error) {
-//     console.log(error)
-//     res.status(404).send({ error: error.message });
-//   }
-
-// });
-
-// Para solicitar info de un gym por su id
-// router.get("/:id", async (req, res) => { 
-//  ---> Tiene conficto con la anterior porque espera un id
-router.get("/gymbyid/:id", async (req, res) => {
+router.get("/gymbyid/:id", async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const response = await getGymById(id);
     res.status(200).send(response);
-  } catch (error) {
+  } catch (error: any) {
     res.status(404).send({ error: error.message });
   }
 });
 
 // Para solicitar info de un gym con su name
-router.get('/gymbyname', async (req, res) => {
+router.get('/gymbyname', async (req: any, res: any) => {
   try {
     const { name } = req.query;
     const response = await getGymByName(name);
     res.status(200).send(response);
-  } catch (error) {
+  } catch (error: any) {
     res.status(404).send({ error: error.message });
   }
 });
 
 // Para actualizar un gym
-router.put('/gymupdate', async (req, res) => {
+router.put('/gymupdate', async (req: any, res: any) => {
     try {        
         const { id, data } = req.body
         const response = await saveGyms(id, data);
         res.status(200).send(response);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
         res.status(404).send({ error: error.message });
       }
 }); 
 
 // Para crear gym
-router.post('/gymcreate/:idUser', async (req, res) => {
+router.post('/gymcreate/:idUser', async (req: any, res: any) => {
     const { idUser } = req.params;    
     try {
       console.log("llega a la ruta post gymcreate")
         const response = await postGyms(idUser, req.body);
         res.status(200).send(response);
-    } catch (error) {
+    } catch (error: any) {
         res.status(404).send({ error: error.message });
       }
 });
@@ -106,7 +75,7 @@ router.post('/gymcreate/:idUser', async (req, res) => {
 //----------------------------------------------------------------------------
 // http:/localhost:3001/api/partner/gyms/mygyms/:userId
 
-router.get("/mygyms/:userId", async (req, res) => {
+router.get("/mygyms/:userId", async (req: any, res: any) => {
 
   let { userId } = req.params;
 
@@ -115,7 +84,9 @@ router.get("/mygyms/:userId", async (req, res) => {
   let partnerId = userId;
 
   try {
-    let infoPartner = await Users.findById(partnerId)
+    let infoPartner: any = await Users.findById(partnerId)
+
+    let allGymPartner: any;
 
     if (infoPartner.partner) {
       let idInfoPartner = infoPartner.partner;
@@ -126,7 +97,7 @@ router.get("/mygyms/:userId", async (req, res) => {
     }
 
     res.status(200).json(allGymPartner);
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
     res.status(404).send({ error: error.message });
   }
@@ -139,7 +110,7 @@ router.get("/mygyms/:userId", async (req, res) => {
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/gyms/createOneGym
 
-router.post('/createOneGym/', async (req, res) => {
+router.post('/createOneGym/', async (req: any, res: any) => {
   console.log(req.body, 'create One Gym 1')
 
   const { userId, dataNewGym } = req.body;
@@ -149,7 +120,7 @@ router.post('/createOneGym/', async (req, res) => {
     let addNewGym;
     
     
-    let infoPartner = await Users.findById(partnerId)
+    let infoPartner: any = await Users.findById(partnerId)
     console.log(infoPartner, ' info del partner')
 
 
@@ -171,7 +142,7 @@ router.post('/createOneGym/', async (req, res) => {
       return res.status(200).json({ message: 'Gimasio creado' });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.log(error, 'create One Gym');
     res.status(404).send({ error: error.message });
   }
@@ -214,7 +185,7 @@ router.post('/createOneGym/', async (req, res) => {
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/gyms/editOneGym
 
-router.put('/editOneGym/', async (req, res) => {
+router.put('/editOneGym/', async (req: any, res: any) => {
   console.log(req.body, 'edite One Gym')
 
   const { gymId, newDataGym } = req.body;
@@ -232,12 +203,11 @@ router.put('/editOneGym/', async (req, res) => {
 
 
     res.status(200).json({ message: 'Gimnasio actualizado' });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     res.status(404).send({ error: error.message });
   }
 })
 
 
-
-module.exports = router;
+export default router;

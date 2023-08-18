@@ -1,31 +1,30 @@
-const mongoose = require('mongoose');
-const Plan = require('../models/Plan');
+import Plan from '../models/Plan';
 
-const getPlans = async (req, res) => {
+export const getPlans = async (req: any, res: any) => {
     try {
         const allPlans = await Plan.find()
         res.send(allPlans)
 
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         res.status(error.status).send(error.message)
     }
 };
 
-const postPlans = async (req, res) => {
+export const postPlans = async (req: any, res: any) => {
     const plan = req.body;
     try {
         const newPlan = new Plan(plan);
         newPlan.save();
         res.send(newPlan)
 
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         res.status(error.status).send(error.message)
     }
 };
 
-const putPlans = async (req, res) => {
+export const putPlans = async (req: any, res: any) => {
     const { id } = req.params;
     const plan = req.body;
     try {
@@ -33,11 +32,8 @@ const putPlans = async (req, res) => {
         const userUpdeted = await Plan.findByIdAndUpdate(id, plan, { new: true });
         res.send(userUpdeted)
 
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         res.status(error.status).send(error.message)
     }
 };
-
-
-module.exports = { getPlans, postPlans, putPlans }

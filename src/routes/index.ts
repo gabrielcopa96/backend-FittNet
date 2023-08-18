@@ -1,19 +1,19 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const routeUser = require('./user/index')
-const routeService = require('./service/index')
-const routePartner = require('./partner/index')
-const routeAdmin = require('./admin/index')
-const routeShopCart = require ('./user/shopCart')
-const routeStripe = require ('./user/stripe')
-const routerUser1 = require('./user')
+import routeUser from './user/index';
+import routeService from './service/index';
+import routePartner from './partner/index';
+import routeAdmin from './admin/index';
+import routeShopCart from './user/shopCart';
+import routeStripe from './user/stripe';
+import routerUser1 from './user';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: any, res: any) => {
     try {
         res.status(200).send("Esta es la api Fittnet")
-    } catch (error) {
+    } catch (error: any) {
         res.status(error.status).json({error: error.message})
     }
 });
@@ -27,4 +27,4 @@ router.use('/api/checkout', routeStripe);
 router.use("/google", routerUser1); 
 
 
-module.exports = router;
+export default router;

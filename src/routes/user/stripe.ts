@@ -1,11 +1,19 @@
-const router = require("express").Router();
-const Stripe = require('stripe')
-require("dotenv").config();
+import "dotenv/config";
+import { Router } from "express";
+import Stripe from 'stripe';
+
 const { API_STRIPE } = process.env;
 
-const stripe = new Stripe(API_STRIPE)
+const router = Router();
 
-router.post('/', async (req, res) => {
+const stripe = new Stripe(
+    API_STRIPE as string,
+    {
+        apiVersion: "2020-08-27"
+    }
+)
+
+router.post('/', async (req: any, res: any) => {
     try {
         const { id, amount } = req.body;
         const payment = await stripe.paymentIntents.create({
@@ -17,18 +25,18 @@ router.post('/', async (req, res) => {
             currency: 'usd',
             payment_method: id,
             transfer_group: 'ORDER10',
-            confirm: true,        
+            confirm: true,
         })
-        .then(()=>{    
-            return true            
-        })
-        .catch((error)=>{
-            return false            
-        })
+            .then(() => {
+                return true
+            })
+            .catch((error: any) => {
+                return false
+            })
         console.log(payment, 'promesa stripe')
-        if(payment===true){
+        if (payment === true) {
             return res.send('todok')
-        }else{
+        } else {
             return res.send('todomal')
         }
     } catch (error) {
@@ -36,4 +44,4 @@ router.post('/', async (req, res) => {
     }
 })
 
-module.exports = router;
+export default router;

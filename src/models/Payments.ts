@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
-const mongoDB = require('mongodb');
+import { Schema, SchemaTypes, model } from "mongoose";
 
-const paymentSchema = new mongoose.Schema({
+const paymentSchema = new Schema({
     partner: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Partners",
         required: true,
     },
@@ -11,7 +10,7 @@ const paymentSchema = new mongoose.Schema({
         type: String,
     },
     plan: {
-        type:  mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Plan",
         required: true,
     },
@@ -28,4 +27,5 @@ const paymentSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Payment', paymentSchema);
+const PaymentModel = model("Payment", paymentSchema);
+export default PaymentModel;

@@ -1,33 +1,27 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const session = require("express-session");
-const passport = require("passport");
-const Strategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
-const randomstring = require("randomstring");
-const { findUser } = require("./controlers/users");
-require("dotenv").config();
-const routes = require("./routes/index.js");
-const { CORS_URL, SECRET } = process.env || "http://localhost:3000";
+import "dotenv/config";
+import express, { Express } from "express";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
+import session from "express-session";
+import passport from "passport";
+import bcrypt from "bcrypt";
+import { Strategy } from "passport-local";
+import { findUser } from "./controlers/users";
+import routes from "./routes/index";
+const { SECRET } = process.env || "http://localhost:3000";
 
-require("./db.js");
+import "./db";
 
-const server = express();
-
-server.name = "API";
+const server: Express = express();
 
 // -------------------  MIDDLEWARES-------------
 
 // ---------- CORS, COOKIES, JSON Y URLENCODER -----------
-server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(express.urlencoded({ extended: true, limit: "50mb" }));
-server.use(bodyParser.json({ limit: "50mb" }));
+server.use(express.json({ limit: "50mb" }));
 server.use(cookieParser("secreto"));
 server.use(morgan("dev"));
-server.use((req, res, next) => {
+server.use((req: any, res: any, next: any) => {
   res.header(
     "Access-Control-Allow-Origin", "*" //! -> le estoy dando permisos a todas las URL
   );
@@ -43,17 +37,17 @@ server.use((req, res, next) => {
 //------------------- AUTHENTICATION ----------------
 
 passport.use(
-  new Strategy(function (username, password, done) {
+  new Strategy(function (username: any, password: any, done: any) {
     console.log('paso uno de la autenticación')
     findUser({ userName: username }) //busca en mongoDB el usuario
-      .then((user) => {
+      .then((user: any) => {
         if (!user) {
           return done(null, false);
         }
         if (user) {
           // Voy a hacer la comparación y evaluar el resultado
           bcrypt.compare(password, user.password)
-            .then((res) => {
+            .then((res: any) => {
               // console.log(res, 'la respuesta de la promesa')
               if (res === false) { // No hay coincidencia entre las password
                 return done(null, false);
@@ -65,7 +59,7 @@ passport.use(
             })
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log(err);
         return done(err);
       });
@@ -73,18 +67,18 @@ passport.use(
 );
 
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function (user: any, done: any) {
   console.log('paso dos de la autenticación')
   done(null, user._id);
 });
 
-passport.deserializeUser(function (_id, done) {
+passport.deserializeUser(function (_id: any, done: any) {
   console.log('paso tres de la autenticación')
   findUser({ _id: _id })
-    .then((user) => {
+    .then((user: any) => {
       done(null, user);
     })
-    .catch(err => {
+    .catch((err: any) => {
       return done(err);
     })
 });
@@ -101,12 +95,12 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 // Middleware para mostrar la sesión actual en cada request
-server.use((req, res, next) => {
+server.use((req: any, res: any, next: any) => {
   // console.log(req.session, ' esto es req.session 120');
   // console.log(req.user, ' esto es req.user 121');
   next();
 });
-server.get('/login', (req, res) => {
+server.get('/login', (req: any, res: any) => {
   res.send('Username o contraseña incorrecta');
 });
 
@@ -114,7 +108,7 @@ server.get('/login', (req, res) => {
 server.use("/", routes); //! http://localhost:3000/
 
 // --- --- Error catching endware.
-server.use((err, req, res, next) => {
+server.use((err: any, req: any, res: any, next: any) => {
   // eslint-disable-line no-unused-vars
   const status = err.status || 500;
   const message = err.message || err;
@@ -122,4 +116,4 @@ server.use((err, req, res, next) => {
   res.status(status).send(message);
 });
 
-module.exports = server;
+export default server;

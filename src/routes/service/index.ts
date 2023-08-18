@@ -1,16 +1,17 @@
-const router = require('express').Router();
-const routeLogin = require('./login');
-const routeLogout = require('./logout');
-const routeRegister = require('./register');
-const routeResetPassword = require('./updatePass');
-const routeActivation = require('./activation');
-const routerEmailValidate = require('./emailValidate');
-const routerGoogleAuth = require('./googleAuth');
-const routerPlans = require('./plans')
-const routerMarketing = require('./marketing');
-const routeEmails = require('./emails');
-const routeMercadopago = require('../service/mercadopago')
+import { Router } from 'express';
+import routeLogin from './login';
+import routeLogout from './logout';
+import routeRegister from './register';
+import routeResetPassword from './updatePass';
+import routeActivation from './activation';
+import routerEmailValidate from './emailValidate';
+import routerGoogleAuth from './googleAuth';
+import routerPlans from './plans';
+import routerMarketing from './marketing';
+import routeEmails from './emails';
+import routeMercadopago from '../service/mercadopago';
 
+const router = Router();
 
 router.use('/', routeLogin); //ruta /api/service/login get y post
 router.use('/', routeLogout); //ruta /api/service/logout post
@@ -25,12 +26,13 @@ router.use('/', routeEmails); //ruta /api/service/emails --> para enviar correos
 router.use('/mercadopago', routeMercadopago) //ruta api/service/mercadopago --> para MP
 
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: any, res: any) => {
     try {
         res.status(200).send("Ruta api/service")
     } catch (error) {
+        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         res.status(error.status).json({error: error.message})
     }
 });
 
-module.exports = router;
+export default router;

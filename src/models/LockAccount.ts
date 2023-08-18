@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const lockAccountSchema = new mongoose.Schema({
+const lockAccountSchema = new Schema({
     userName: {
         type: String,
         unique: true,
@@ -8,4 +8,5 @@ const lockAccountSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('LockAccounts', lockAccountSchema);
+const LockAccountsModel = model('LockAccounts', lockAccountSchema);
+export default LockAccountsModel;

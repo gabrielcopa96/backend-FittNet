@@ -1,28 +1,17 @@
-const mongoose = require("mongoose");
-const User = require("../models/User");
-const Partner = require("../models/Partner");
-const Gym = require("../models/Gyms");
-const Service = require("../models/Service");
-const Address = require("../models/Address");
-const ObjectId = require("mongoose").Types.ObjectId;
-const Plan = require("../models/Plan");
-const SocialMedia = require("../models/SocialMedia");
-const { postGyms } = require("../controlers/gyms")
-// const { putSocialMedia } =require("./helpers");
-const Gyms = require("../models/Gyms");
+import User from "../models/User";
+import Partner from "../models/Partner";
+import Plan from "../models/Plan";
+import { postGyms } from "../controlers/gyms";
+import { putSocialMedia } from "./helpers";
 
-
-
-
-const getPartner = async (req, res) => {
+export const getPartner = async (req: any, res: any) => {
   const { id } = req.params;
   // console.log(id, "esta es la ruta correcta");
   try {
-    const partnerUser = await User.findById(id)
+    const partnerUser: any = await User.findById(id)
     .populate({
       path: "partner",
     })
-    const gyms = partnerUser.partner.gyms;
     const partnerGyms = await Partner.findById(partnerUser.partner._id)
     .populate({
       path: "gyms",
@@ -46,7 +35,7 @@ const getPartner = async (req, res) => {
   }
 };
 
-const getAllPartners = async (req, res) => {
+export const getAllPartners = async (req: any, res: any) => {
   // const { id } = req.params;
   console.log("esta es la ruta correcta");
   try {
@@ -103,7 +92,7 @@ const getAllPartners = async (req, res) => {
 };
 
 
-const putPartner = async (req, res) => {
+export const putPartner = async (req: any, res: any) => {
   const { id } = req.params;
   const {
     name,
@@ -115,6 +104,7 @@ const putPartner = async (req, res) => {
     cuil,
     socialNetworks, //debe llegar como un array de id
     gyms, //debe llegar como un array de id
+    // @ts-expect-error TS(6133): 'category' is declared but its value is never read... Remove this comment to see the full error message
     category, //debe llegar como un id
     userActive, //si llega seria como bolean
     paymentMethods, //debe llegar como un array de id
@@ -125,7 +115,7 @@ const putPartner = async (req, res) => {
 
   try {
     //primero identifica el plan del usuario partner
-    const user = await User.findById(id).populate("partner");
+    const user: any = await User.findById(id).populate("partner");
     const idPartnerPlan = planType ? planType : user.partner.planType;
     const partnerPlan = await Plan.findById(idPartnerPlan); //obtengo el plan del usuario
 
@@ -137,15 +127,13 @@ const putPartner = async (req, res) => {
     };
 
     //se envian las redes sociale para su creacion o edicion
-    let sMediaUser = [];
     if (socialNetworks && Array.isArray(socialNetworks)) {
-      sMediaUser = await putSocialMedia(id, socialNetworks);
+      await putSocialMedia(id, socialNetworks);
     }
     // console.log(id, gyms[0])
     // se envian los gyms para su creacion o edicion
-    let partnerGyms = "";
     if (gyms && Array.isArray(gyms) && gyms.length > 0) {
-      partnerGyms = await postGyms(id, gyms);
+      await postGyms(id, gyms);
     }
 
     const newPartner = {
@@ -165,13 +153,13 @@ const putPartner = async (req, res) => {
       incomes: incomes ? incomes : user.partner.incomes ? user.partner.incomes : [],
       payments: payments ? payments : user.partner.payments ? user.partner.payments : [],
     };
-    const partnerUpdated = await Partner.findByIdAndUpdate(
+    await Partner.findByIdAndUpdate(
       user.partner._id,
       newPartner,
       { new: true }
     ).populate("socialNetworks").populate("gyms").populate("planType");
 
-    const userUpdated = await User.findById({ _id: id })
+    await User.findById({ _id: id })
     return res.json({
       ok: true,
       msg: "La información del socio ha sido actualizada",
@@ -179,7 +167,7 @@ const putPartner = async (req, res) => {
       // partner: partnerUpdated,
       // partnerGyms
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({
       ok: false,
@@ -187,5 +175,3 @@ const putPartner = async (req, res) => {
     });
   }
 };
-
-module.exports = { getPartner, putPartner, getAllPartners };

@@ -1,93 +1,77 @@
-const router = require("express").Router();
-const run = require("../../controlers/test")
-//const deleteDesease = require("../../controlers/test")
-const Diseases = require('../../models/Diseases')
-const DiseasesType = require('../../models/DiseasesType')
+import { Router } from "express";
+import run from "../../controlers/test";
+import DiseasesType from '../../models/DiseasesType';
+import { findAllUsers } from "../../controlers/users";
 
-const { findAllUsers } = require("../../controlers/users");
+const router = Router();
 
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: any, res: any) => {
     console.log('si llega a la ruta')
     try {
         const response = await findAllUsers();
         res.status(200).send(response)
-    } catch (error) {
+    } catch (error: any) {
         res.status(error.status).send({ msg: error.message })
     }
 });
 
 
 
-router.get("/deleteDesease/:id", async (req, res) => {
+router.get("/deleteDesease/:id", async (req: any, res: any) => {
     console.log('si llega a la ruta')
-        try {
-            const { id } = req.params;
-            const response = await run(id);
-            console.log(response);
-            res.status(200).send(response);
-        } catch (error) {
-            res.status(error.status).send({ msg: error.message });
-        }
+    try {
+        const response = await run();
+        console.log(response);
+        res.status(200).send(response);
+    } catch (error: any) {
+        res.status(error.status).send({ msg: error.message });
+    }
 
-    });
+});
 
-router.get("/findDeseaseType/", async (req, res) => {
+router.get("/findDeseaseType/", async (req: any, res: any) => {
     try {
         const types = await DiseasesType.find()
         res.status(200).send(types);
-    } catch (error) {
+    } catch (error: any) {
         res.status(error.status).send({ msg: error.message });
     }
-    
+
 })
 
-router.get("/createDeseaseType/", async (req, res) => {
-        console.log('si llega a la ruta')
-            try {
-                const { id } = req.params;
-                const response = await run(id);
-                console.log(response);
-                res.status(200).send(response);
-            } catch (error) {
-                res.status(error.status).send({ msg: error.message });
-            }
-    
-        });
-
-
-
-
-/* router.get("/deseases", async (req, res) =>{
+router.get("/createDeseaseType/", async (req: any, res: any) => {
+    console.log('si llega a la ruta')
     try {
-        const resp = await run()
-    res.status(200).send("desease created")
-    } catch (error) {
+        const response = await run();
+        console.log(response);
+        res.status(200).send(response);
+    } catch (error: any) {
+        res.status(error.status).send({ msg: error.message });
+    }
+
+});
+
+router.get("/deseases/", async (req: any, res: any) => {
+    try {
+        res.status(200).send("desease created")
+    } catch (error: any) {
         res.status(error.status).send({ msg: error.message })
     }
-    
-}) */
-router.get("/deseases/", async (req, res) =>{
-    try {
-        //const resp = await run()
-    res.status(200).send("desease created")
-    } catch (error) {
-        res.status(error.status).send({ msg: error.message })
-    }
-    
+
 })
 
-router.get("/deseasesMap", async (req, res) =>{
+router.get("/deseasesMap", async (req: any, res: any) => {
     try {
         const resp = await DiseasesType.find()
-       // const deseasesTypes = resp.map(e => e.deseaseName)
+        // const deseasesTypes = resp.map(e => e.deseaseName)
         //const desases= new Set(desease)
-    res.status(200).send(resp)
-    } catch (error) {
+        res.status(200).send(resp)
+    } catch (error: any) {
         res.status(error.status).send({ msg: error.message })
     }
-    
+
 })
 
-module.exports = router;
+export default router;
 

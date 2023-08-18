@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const Users = require('../../models/User')
-const { findUser, updatePassword } = require('../../controlers/users');
-// const cookieparser = require('cookie-parser');
+import { Router } from 'express';
+import Users from '../../models/User';
+import { findUser, updatePassword } from '../../controlers/users';
+
 const router = Router();
 
 // uso esta ruta para "borrar" la contraseña
@@ -11,7 +11,7 @@ const router = Router();
 // FALTA TERMINAR - 
 // ya busca esl usuario por su id y lo encuentra
 
-router.post('/updatepassword', async (req, res, next) => {
+router.post('/updatepassword', async (req: any, res: any, next: any) => {
 
     let { userId } = req.body; 
     let { newPassword } = req.body;
@@ -20,7 +20,7 @@ router.post('/updatepassword', async (req, res, next) => {
     console.log('está entrando al post de update password', req.body)
     
     try {
-        let findUserById = await Users.find({_id: userId})
+        let findUserById: any = await Users.find({_id: userId})
         
         if (findUserById === 0) return res.send('Usuario no encontrado')
         
@@ -56,8 +56,6 @@ router.post('/updatepassword', async (req, res, next) => {
             
         }      
       
-        
-
     } catch (error) {
         console.log(error)
         res.send('Ocurrió un error durante el reinicio de contraseña')
@@ -65,7 +63,7 @@ router.post('/updatepassword', async (req, res, next) => {
     
 })
 
-router.get('/updatepassword', async (req, res, next) => {
+router.get('/updatepassword', async (req: any, res: any, next: any) => {
     let { userName } = req.query;
     // console.log('está entrando al get de update password', req.query)
     let user = await findUser({userName:userName})
@@ -84,5 +82,4 @@ router.get('/updatepassword', async (req, res, next) => {
 })
 
 
-module.exports = router;
-
+export default router;

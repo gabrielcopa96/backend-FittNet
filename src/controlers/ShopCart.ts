@@ -1,9 +1,6 @@
-const mongoose = require('mongoose');
-const ShopCart = require('../models/ShopCart');
-const Gyms = require('../models/Gyms')
-const Service = require('../models/Service')
+import ShopCart from '../models/ShopCart';
 
-const getShopCart = async (req, res) => {
+export const getShopCart = async (req: any, res: any) => {
     try {
 
         const response = await ShopCart.aggregate([
@@ -17,13 +14,13 @@ const getShopCart = async (req, res) => {
             { $unwind: { path: '$services', preserveNullAndEmptyArrays: true } },
             { $project: { _id: 1, user: 1, gyms: 1, services: 1, status: 1 } }])
         res.send(response)
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
 
-const postCart = async (req, res) => {
+export const postCart = async (req: any, res: any) => {
     const { gym, services, user } = req.body
     console.log()
     try {
@@ -33,13 +30,13 @@ const postCart = async (req, res) => {
             user: user
         })
         res.send(newShopCart)
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
 
-const updateCart = async (req, res) => {
+export const updateCart = async (req: any, res: any) => {
     console.log(req.body, 'esto es update stripe')
     // {
     // userId: '629ce3fb748e4a864f6c4f98',
@@ -68,11 +65,8 @@ const updateCart = async (req, res) => {
         const updatedShopCart = await ShopCart.create(promesas)
         console.log(updatedShopCart, 'promesas sobre el bidet')
         res.json(updatedShopCart)
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
-
-
-module.exports = { getShopCart, postCart, updateCart }

@@ -1,45 +1,41 @@
-const mongoose = require('mongoose');
-const { findByIdAndDelete } = require('../models/User');
-const User = require('../models/User');
-const InfoUser = require('../models/InfoUser');
-const ObjectId = require('mongoose').Types.ObjectId;
-var passport = require("passport");
-// const jwt
-const jwt_decode = require('jwt-decode');
-const bcrypt = require('bcrypt');
-const Address = require('../models/Address');
-const Diseases = require('../models/Diseases')
-const DiseasesType = require('../models/DiseasesType')
+import { Types } from 'mongoose';
+import User from '../models/User';
+import InfoUser from '../models/InfoUser';
+import jwt_decode from 'jwt-decode';
+import bcrypt from 'bcrypt';
+import Address from '../models/Address';
+import Diseases from '../models/Diseases';
+import DiseasesType from '../models/DiseasesType';
 
-async function findUser(userName) {
+export async function findUser(userName: any) {
     try {
         const response = await User.findOne(userName)
             .populate('avatar')
             .populate('info')
             .populate('partner')
         return response
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
 
-async function findAllUsers() {
+export async function findAllUsers() {
     try {
         const response = await User.find({})
             .populate('avatar')
             .populate('info')
             .populate('partner')
         return response
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
 
-const getUserDetails = async (req, res) => {
+export const getUserDetails = async (req: any, res: any) => {
     const { id } = req.params;
-    const user = await User.findById(id)
+    const user: any = await User.findById(id)
         .populate('avatar')
         .populate('favourite')
 
@@ -55,7 +51,7 @@ const getUserDetails = async (req, res) => {
     })
 }
 
-const getUser = async (req, res) => {
+export const getUser = async (req: any, res: any) => {
     const { id } = req.params;
     console.log(id)
     try {
@@ -76,24 +72,7 @@ const getUser = async (req, res) => {
     }
 }
 
-/* const updateUser = async (req, res) => {
-    const { id } = req.params
-    try {
-        const body = req.body
-
-
-        const dataDesease = body.desease
-        const user = await User.findById(id)
-        const allDesease = user.desease
-        const igualesDeseases = allDesease.filter(x => dataDesease.some(y => y.desease === x.desease));
-        const desigualesDesease = dataDesease.filter(x => !allDesease.some(y => y.desease === x.desease));
-
-    } catch (error) {
-        
-    }
-       
-} */
-const updateUser = async (req, res) => {
+export const updateUser = async (req: any, res: any) => {
     const { id } = req.params
     try {
         const body = req.body
@@ -102,8 +81,8 @@ const updateUser = async (req, res) => {
         console.log(dataDesease)
 
         const findDesTypes = await DiseasesType.find()
-        const fil = findDesTypes.filter(e => dataDesease.includes(e.deseaseName))
-        const deseaseId = fil.map(x => x._id);
+        const fil = findDesTypes.filter((e: any) => dataDesease.includes(e.deseaseName))
+        const deseaseId = fil.map((x: any) => x._id);
         // const allDesease = await Diseases.find();
         // const igualesDeseases = allDesease.filter(x => dataDesease.some(y => y.desease === x.desease));
         // const desigualesDesease = dataDesease.filter(x => !allDesease.some(y => y.desease === x.desease));
@@ -125,10 +104,8 @@ const updateUser = async (req, res) => {
             trainlimits: body.trainlimits,
             considerations: body.considerations
         }
-        console.log("newDiseasesUser", newDiseasesUser)
 
-        finallyDesease = await Diseases.create(newDiseasesUser)
-        console.log("finallyDesease", finallyDesease)
+        const finallyDesease = await Diseases.create(newDiseasesUser)
 
         const newAddressUser = {
             street: body.street,
@@ -140,23 +117,21 @@ const updateUser = async (req, res) => {
             country: body.country,
             zipCode: body.zipCode
         }
-        const user = await User.findById(id)
+        const user: any = await User.findById(id)
 
 
 
         const idInfo = user.info
         const idAvatar = user.avatar
-        const infoUsuario = await InfoUser.findById(idInfo);
+        const infoUsuario: any = await InfoUser.findById(idInfo);
 
         let idAddress = infoUsuario.address ? infoUsuario.address : null
 
         if (idAddress === null) {
-            console.log("estoy en crear una nueva direccion")
             const addressUser = new Address(newAddressUser)
             await addressUser.save()
             idAddress = addressUser._id
         } else {
-            console.log("estoy en editar un nueva direccion")
             await Address.findByIdAndUpdate(idAddress, newAddressUser, { new: true })
         }
         const newInfoUser = {
@@ -186,19 +161,19 @@ const updateUser = async (req, res) => {
     }
 }
 
-async function deleteUser(id) {
+export async function deleteUser(id: any) {
     try {
         const userDeleted = await User.findByIdAndDelete(id)
         console.log(userDeleted)
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
         return error.message
     }
 }
 
-const getUserGoogleAccount = async (req, res) => {
+export const getUserGoogleAccount = async (req: any, res: any) => {
     const { token } = req.body;
-    const usuario = jwt_decode(token)
+    const usuario: any = jwt_decode(token)
     const userName = usuario.email
     try {
         const user = await User.findOne({ userName: userName })
@@ -217,7 +192,7 @@ const getUserGoogleAccount = async (req, res) => {
     }
 }
 
-const googleSignIn = async (req, res) => {
+export const googleSignIn = async (req: any, res: any) => {
     const googleToken = req.body.tokenId
     const { email, name, given_name, family_name, picture } = req.body.data;
     console.log(req.body)
@@ -270,10 +245,10 @@ const googleSignIn = async (req, res) => {
     }
 }
 
-function isValidObjectId(id) {
+export function isValidObjectId(id: any) {
 
-    if (ObjectId.isValid(id)) {
-        if ((String)(new ObjectId(id)) === id)
+    if (Types.ObjectId.isValid(id)) {
+        if ((String)(new Types.ObjectId(id)) === id)
             return true;
         return false;
     }
@@ -281,7 +256,7 @@ function isValidObjectId(id) {
 }
 
 
-async function updatePassword(userId, newPassword, password, secretToken) {
+export async function updatePassword(userId: any, newPassword: any, password: any, secretToken: any) {
     if (userId && newPassword && password && !secretToken) {
         // Entonces hablamos de una actualización de password
         // El usuario quiere actualizar su password
@@ -289,14 +264,14 @@ async function updatePassword(userId, newPassword, password, secretToken) {
         // 2. Setearle la nueva password.
 
         let validation = await findUser({ _id: userId }) //busca en mongoDB el usuario
-            .then((user) => {
+            .then((user: any) => {
                 if (!user) {
                     return false;
                 }
                 if (user) {
                     // Si tengo usuario retorno una nueva promesa
                     return bcrypt.compare(password, user.password)
-                        .then((res) => {
+                        .then((res: any) => {
                             if (res === false) { // No hay coincidencia entre las password
                                 return false;
                             }
@@ -304,12 +279,12 @@ async function updatePassword(userId, newPassword, password, secretToken) {
                                 // console.log(user, res, ' user en la 54');                                
                                 return true;
                             }
-                        })
+                        });
                 }
             })
-            .catch((err) => {
+            .catch((err: any) => {
                 console.log(err);
-                return done(err);
+                throw err;
             });
         // validation puede ser igual a false o true (en caso de que el usuario 
         // exista y su password sea correcta)
@@ -357,18 +332,3 @@ async function updatePassword(userId, newPassword, password, secretToken) {
 
     }
 }
-
-
-
-module.exports = {
-    findUser,
-    findAllUsers,
-    getUser,
-    deleteUser,
-    updateUser,
-    updatePassword,
-    googleSignIn,
-    isValidObjectId,
-    getUserGoogleAccount,
-    getUserDetails,
-};

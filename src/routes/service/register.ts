@@ -1,17 +1,14 @@
-const { Router } = require('express');
-const Users = require('../../models/User')
-const { deleteUser, getUser } = require('../../controlers/users')
-const InfoUsers = require('../../models/InfoUser');
-const Partner = require('../../models/Partner');
-const bcrypt = require('bcrypt');
-const randomstring = require("randomstring");
-const LockAccounts = require('../../models/LockAccount');
-
+import { Router } from 'express';
+import Users from '../../models/User';
+import InfoUsers from '../../models/InfoUser';
+import Partner from '../../models/Partner';
+import bcrypt from 'bcrypt';
+import randomstring from "randomstring";
+import LockAccounts from '../../models/LockAccount';
 
 const router = Router();
 
-
-function isAuthenticated(req, res, next) {
+export function isAuthenticated(req: any, res: any, next: any) {
   console.log(req.session, ' esto es req.session register isAuthenticated');
   console.log(req.user, ' esto es req.user register isAuthenticated');
   console.log(req.cookies,' esto es req.cookies register isAuthenticated' )
@@ -23,19 +20,12 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// router.get('/getuser', (req, res, next) => {
-
-  
-// })
-
-
-
 //-------------------------------------------------------------------------------
 // Esta ruta get responde cuando un usuario con sesión activa intenta
 // hacer un post a /api/service/register.
 //-------------------------------------------------------------------------------
 
-router.get('/register', (req, res, next) => {
+router.get('/register', (req: any, res: any, next: any) => {
   res.send('No puede realizar un post /register mientras su sesión esté iniciada');
 })
 
@@ -44,7 +34,7 @@ router.get('/register', (req, res, next) => {
 // Esta ruta post recibe request para crear nuevos usuarios en la base de datos.
 //-------------------------------------------------------------------------------
 
-router.post('/register', isAuthenticated, async (req, res, next) => {   
+router.post('/register', isAuthenticated, async (req: any, res: any, next: any) => {   
   //También debería recibir tipo de usuario "admin", "client" o "partner"
   
   const { name, username, password, latitude, longitude, type } = req.body;
@@ -58,7 +48,6 @@ router.post('/register', isAuthenticated, async (req, res, next) => {
 
     let lockAccount = await LockAccounts.find({userName: username})
     
-    // console.log(lockAccount, ' esto es req.user autenticado');
 
     if (lockAccount.length > 0 ) { // Si está baneado
       return res.redirect('/api/service/lockedaccount');
@@ -67,7 +56,7 @@ router.post('/register', isAuthenticated, async (req, res, next) => {
     
     if ( name && username && password && type) {  
       let salt = 8; // número de saltos "niveles de seguridad"
-      let newUser;        
+      let newUser: any;        
       let userId;
 
       // No pongo el await para que no las espere las romesas y vaya directamente al promiseAll
@@ -173,4 +162,4 @@ router.post('/register', isAuthenticated, async (req, res, next) => {
 //   failureRedirect: "/login",
 // }))
 
-module.exports = router;
+export default router;

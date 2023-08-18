@@ -1,13 +1,12 @@
-const mongoose = require("mongoose");
-const mongoDB = require('mongodb')
+import { Schema, model, SchemaTypes, Types } from "mongoose";
 
-const gymSchema = new mongoose.Schema({
+const gymSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
   price: {
-    type: mongoDB.Decimal128,
+    type: Types.Decimal128,
   },
   raiting: {
     type: Number,
@@ -18,18 +17,18 @@ const gymSchema = new mongoose.Schema({
     of: String,
   },
   latitude: {
-      type: mongoDB.Decimal128,        
+      type: Types.Decimal128,        
   },
   longitude: {
-      type: mongoDB.Decimal128,
+      type: Types.Decimal128,
   },  
   address: {
-    type: mongoose.SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: "Address",
   },
   services: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "Services",
   },
   trainers: {
@@ -50,12 +49,12 @@ const gymSchema = new mongoose.Schema({
   },
   uEnd: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "Users",
   },
   socialNetworks: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "SocialMedia",
   },
   gymActive: {
@@ -71,4 +70,5 @@ const gymSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("Gyms", gymSchema);
+const GymsModel = model("Gyms", gymSchema);
+export default GymsModel;

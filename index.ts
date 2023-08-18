@@ -1,8 +1,12 @@
-const server = require('./src/app.js');
-const { conn } = require('./src/db.js');
+import server from './src/app';
+import { conn } from './src/db';
 
 const PORT = process.env.PORT || 3001
 
-server.listen(PORT, async () => {
-  console.log(`Server listening at port ${PORT}`);
-});
+conn.then(() => {
+  server.listen(PORT, async () => {
+    console.log(`Server listening at port ${PORT}`);
+  });
+}).catch((err: any) => {
+  console.log("not connection database", err);
+})

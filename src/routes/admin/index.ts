@@ -1,9 +1,10 @@
-const router = require("express").Router();
-const ObjectId = require('mongoose').Types.ObjectId;
-const Users = require('../../models/User');
-const LockAccounts = require('../../models/LockAccount');
-const { regEmail } = require('../../controlers/regExes');
+import { Router } from 'express';
+import Users from '../../models/User';
+import LockAccounts from '../../models/LockAccount';
+import { regEmail } from '../../controlers/regExes';
+import { Types } from 'mongoose';
 
+const router = Router();
 // function isAuthenticated(req, res, next) {
 
 //   // console.log(req.body, 'que trae el body?')
@@ -31,10 +32,10 @@ const { regEmail } = require('../../controlers/regExes');
 // );
 
 
-function isValidObjectId(id) {
+function isValidObjectId(id: any) {
 
-  if (ObjectId.isValid(id)) {
-    if ((String)(new ObjectId(id)) === id)
+  if (Types.ObjectId.isValid(id)) {
+    if ((String)(new Types.ObjectId(id)) === id)
       return true;
     return false;
   }
@@ -45,7 +46,7 @@ function isValidObjectId(id) {
 // Consulta la lista de correos baneados el sitio
 //--------------------------------------------------------------------------------
 
-router.get("/lockaccounts", async (req, res) => {
+router.get("/lockaccounts", async (req: any, res: any) => {
   try {
     let lockAccounts = await LockAccounts.find().sort({ userName: 'asc', test: -1 });
     // console.log(blockAccounts);
@@ -53,6 +54,7 @@ router.get("/lockaccounts", async (req, res) => {
 
   } catch (error) {
     console.log(error);
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
@@ -61,7 +63,7 @@ router.get("/lockaccounts", async (req, res) => {
 // Agrega un email a la lista de correos baneados para que no funcione en el sitio
 //--------------------------------------------------------------------------------
 
-router.put("/lockaccounts", async (req, res) => {
+router.put("/lockaccounts", async (req: any, res: any) => {
 
   let { userName } = req.body;
   
@@ -83,6 +85,7 @@ router.put("/lockaccounts", async (req, res) => {
 
   } catch (error) {
     console.log(error);
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
@@ -91,7 +94,7 @@ router.put("/lockaccounts", async (req, res) => {
 // Quita un email a la lista de correos baneados
 //--------------------------------------------------------------------------------
 
-router.delete("/lockaccounts", async (req, res) => {
+router.delete("/lockaccounts", async (req: any, res: any) => {
 
   let { userName } = req.body;
 
@@ -107,6 +110,7 @@ router.delete("/lockaccounts", async (req, res) => {
 
   } catch (error) {
     console.log(error);
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
@@ -116,7 +120,7 @@ router.delete("/lockaccounts", async (req, res) => {
 //--------------------------------------------------------------------------------
 // Elimina toda la información completa de un usuario
 //--------------------------------------------------------------------------------
-router.delete("/delete", async (req, res, next) => {
+router.delete("/delete", async (req: any, res: any, next: any) => {
   const { userId } = req.body;
 
   try {
@@ -137,7 +141,7 @@ router.delete("/delete", async (req, res, next) => {
 //--------------------------------------------------------------------------------
 // Responde con la info completa del usuario admin 
 //--------------------------------------------------------------------------------
-router.get("/userId/:userId", async (req, res) => {
+router.get("/userId/:userId", async (req: any, res: any) => {
   const { userId } = req.params;
 
   try {
@@ -150,13 +154,14 @@ router.get("/userId/:userId", async (req, res) => {
     res.json(user);
 
   } catch (error) {
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
 //--------------------------------------------------------------------------------
 // Responde con la info de todos los users 
 //--------------------------------------------------------------------------------
-router.get("/allusers", async (req, res) => {
+router.get("/allusers", async (req: any, res: any) => {
 
   try {
     let pipeline = { $match: { type: "user" } };
@@ -176,13 +181,14 @@ router.get("/allusers", async (req, res) => {
     res.json(allUsers);
 
   } catch (error) {
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
 //--------------------------------------------------------------------------------
 // Responde con la info de todos los partners 
 //--------------------------------------------------------------------------------
-router.get("/allpartners", async (req, res) => {
+router.get("/allpartners", async (req: any, res: any) => {
   try {
 
     let pipeline = { $match: { type: "partner" } };
@@ -203,8 +209,9 @@ router.get("/allpartners", async (req, res) => {
     res.json(allUsers);
 
   } catch (error) {
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
 
-module.exports = router;
+export default router;

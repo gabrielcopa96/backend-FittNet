@@ -1,14 +1,13 @@
-const { Router } = require("express");
-const nodemailer = require("nodemailer");
+import { Router } from "express";
+import { Types } from "mongoose";
+import nodemailer from "nodemailer";
+
+const router = Router();
+
 const USER_ACCOUNT = process.env.USER_ACCOUNT;
 const PASS_ACCOUNT = process.env.PASS_ACCOUNT;
-const CORS_URL = process.env.CORS_URL || "http://localhost:3000";
-const { regEmail } = require("../../controlers/regExes");
-const ObjectId = require("mongoose").Types.ObjectId;
-const ShopCart = require("../../models/ShopCart");
-const { getShopCart } = require("../../controlers/ShopCart");
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
@@ -24,13 +23,13 @@ transporter.verify(() => {
   console.log("Ready for send emails");
 });
 
-const router = Router();
+
 
 //! let body = createBodyEmail(username, gymName, phoneGym,saleDetail);
 //-------------------------------------------------------------------------------
 // Esta función crea el cuerpo del correo a enviar
 //-------------------------------------------------------------------------------
-function createBodyEmail(username, gymName, phoneGym, saleDetail) {
+function createBodyEmail(username: any, gymName: any, phoneGym: any, saleDetail: any) {
   //? username -> Es un string
   //? gymName -> Es un string
   //? phoneGym -> Es un string
@@ -160,6 +159,7 @@ function createBodyEmail(username, gymName, phoneGym, saleDetail) {
               `;
 
 
+  // @ts-expect-error TS(7006): Parameter 'r' implicitly has an 'any' type.
   var resume = saleDetail.map((r) => ({
     precio: r.price,
     cantidad: r.quantity,
@@ -170,6 +170,7 @@ function createBodyEmail(username, gymName, phoneGym, saleDetail) {
   console.log(resume);
 
   // console.log(resume[0].email, 'el correo de la persona');
+  // @ts-expect-error TS(7006): Parameter 'detalle' implicitly has an 'any' type.
   function email(detalle) {
     var compra = [];
     var contador = 1;
@@ -278,9 +279,9 @@ function createBodyEmail(username, gymName, phoneGym, saleDetail) {
   return bodyEmail1.concat(bodyEmail2).concat(bodyEmail3);
 }
 
-function isValidObjectId(id) {
-  if (ObjectId.isValid(id)) {
-    if (String(new ObjectId(id)) === id) return true;
+export function isValidObjectId(id: string) {
+  if (Types.ObjectId.isValid(id)) {
+    if (String(new Types.ObjectId(id)) === id) return true;
     return false;
   }
   return false;
@@ -393,5 +394,4 @@ router.post("/emails", async (req, res, next) => {
 //     next();
 //   }
 // }
-
-module.exports = router;
+export default router;

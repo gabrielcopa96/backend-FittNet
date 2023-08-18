@@ -1,8 +1,8 @@
-const Avatar = require('../models/Avatar');
-const User = require('../models/User')
-const ObjectId = require('mongoose').Types.ObjectId;
+import Avatar from '../models/Avatar';
+import User from '../models/User';
+import { Types } from 'mongoose';
 
-const getAvatar = async (req, res) => {
+export const getAvatar = async (req: any, res: any) => {
     try {
         const avatar = await Avatar.find();
         res.status(200).json(avatar);
@@ -15,7 +15,7 @@ const getAvatar = async (req, res) => {
     }
 }
 
-const createAvatar = async (req, res) => {
+export const createAvatar = async (req: any, res: any) => {
     try {
         const newAvatar = new Avatar(req.body);
         await newAvatar.save();
@@ -32,17 +32,17 @@ const createAvatar = async (req, res) => {
     }
 }
 
-function isValidObjectId(id) {
+export const isValidObjectId = (id: any) => {
 
-    if (ObjectId.isValid(id)) {
-        if ((String)(new ObjectId(id)) === id)
+    if (Types.ObjectId.isValid(id)) {
+        if ((String)(new Types.ObjectId(id)) === id)
             return true;
         return false;
     }
     return false;
 }
 
-const updateAvatarForUser = async (req, res) => {
+export const updateAvatarForUser = async (req: any, res: any) => {
     const { id } = req.params;
     const { avatar } = req.body;
     try {

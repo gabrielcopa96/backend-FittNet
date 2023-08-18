@@ -1,11 +1,10 @@
-const router = require('express').Router();
+import { Router } from 'express';
+import { googleSignIn, getUser } from '../controlers/users';
 
-const { googleSignIn, getUser, getUserDetails, getUserGoogleAccount } = require('../controlers/users');
+const router = Router();
 
 router.post('/google/auth', googleSignIn);
 
 router.get('/user/profile/:id', getUser);
-// router.post('/user/profile', getUserGoogleAccount);
 
-
-module.exports = router;
+export default router;

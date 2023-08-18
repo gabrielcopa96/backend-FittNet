@@ -1,15 +1,17 @@
-const router = require("express").Router();
-const routerProfile = require('./profile');
-const routerGyms = require('./gyms');
-const routerServices = require('./services');
-const routerSales = require("./sales")
+import { Router } from "express";
+import routerProfile from './profile';
+import routerGyms from './gyms';
+import routerServices from './services';
+import routerSales from "./sales";
+
+const router = Router();
 
 router.use("/gyms", routerGyms);
 router.use("/services", routerServices); 
 router.use("/profile", routerProfile);
 router.use("/sales", routerSales);
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: any, res: any) => {
   try {
     res
       .status(200)
@@ -17,8 +19,9 @@ router.get("/", async (req, res) => {
         "Ruta /api/Partner"
       );
   } catch (error) {
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
     res.status(error.status).json({ error: error.message });
   }
 });
 
-module.exports = router;
+export default router;

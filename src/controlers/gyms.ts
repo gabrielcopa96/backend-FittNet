@@ -1,67 +1,65 @@
-const mongoose = require("mongoose");
-const Gims = require("../models/Gyms");
-const Address = require("../models/Address");
-const Service = require("../models/Service");
-const User = require("../models/User");
-const Gyms = require("../models/Gyms");
-const Partner = require("../models/Partner");
-const Plan = require("../models/Plan");
-const { putGymAddresses, putGymsSocialMedia } = require("./helpers");
-const { putService } = require("./services");
+import Gims from "../models/Gyms";
+// import Address from "../models/Address";
+import Service from "../models/Service";
+import User from "../models/User";
+import Gyms from "../models/Gyms";
+import Partner from "../models/Partner";
+import { putGymAddresses, putGymsSocialMedia } from "./helpers";
+import { putService } from "./services";
 
-async function getAllGyms() {
+export async function getAllGyms() {
   try {
     const response = await Gims.find({})
       .populate("address")
       .populate("services")
       .populate("socialNetworks");
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 }
 
-async function getGymById(id) {
+export async function getGymById(id: any) {
   try {
     const response = await Gims.findById({ _id: id })
       .populate("address")
       .populate("services")
       .populate("socialNetworks");
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 }
 
-async function getGymByName(name) {
+export async function getGymByName(name: any) {
   try {
     const response = await Gims.find(name)
-    .populate("address")
-    .populate("services")
-    .populate("socialNetworks");
+      .populate("address")
+      .populate("services")
+      .populate("socialNetworks");
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 }
 
-async function postGyms(idUser, gyms) {
+export async function postGyms(idUser: any, gyms: any) {
   // idUser - id del usario que crea el gym
   // gym arreglo de objetos (gyms) con propiedades y valores de cada gym a crear
-  try { 
+  try {
     console.log("si llega aqui", Object.keys(gyms))
-    if(Object.keys(gyms).length === 0) return {      
+    if (Object.keys(gyms).length === 0) return {
       Ok: false,
       msg: "No se recibio info del Gym, por lo que no se realizo ninguna acción"
     }
     console.log("no paso por el if")
-    const userToAddGym = await User.findById({ _id: idUser }).populate(
+    const userToAddGym: any = await User.findById({ _id: idUser }).populate(
       "partner"
     ); //trae el usuario
-    const partnerComplete = await Partner.findById(userToAddGym.partner[0]._id) //trae el partner del usuario
+    const partnerComplete: any = await Partner.findById(userToAddGym.partner[0]._id) //trae el partner del usuario
       .populate("planType")
       .populate("socialNetworks")
       .populate("gyms");
@@ -103,9 +101,9 @@ async function postGyms(idUser, gyms) {
           addressesToCreateNE.push(gyms[i].address);
           sMediaToCreateNE.push(gyms[i].socialNetworks);
         } else { //si manda un id un usuario nuevo pero que ya su gym esta en el sistema, pasa aqui,
-                  //pensado para los usuarios que ya estan y que no tienen gyms seteados para setearles gyms 
-                  //que ya existen en el sistema por ahora nada mas etapa develop, posteriormente no deberia 
-                  //volver a pasar por aqui
+          //pensado para los usuarios que ya estan y que no tienen gyms seteados para setearles gyms 
+          //que ya existen en el sistema por ahora nada mas etapa develop, posteriormente no deberia 
+          //volver a pasar por aqui
           while (
             gymsToDiscount <= gymsPermited ||
             gymsToDiscount <= numberOfGymsComing
@@ -117,8 +115,9 @@ async function postGyms(idUser, gyms) {
             await putService(idUser, idToSet, gyms[i].services); //manda los servicios a crear o actualizar
             await putGymsSocialMedia(idToSet, gyms[i].socialNetworks); //manda las redes a crear o actualizar
             await putGymAddresses(idToSet, gyms[i].address); ////manda la direccion a crear o actualizar 
-            gymsCreated.push(newGym);         
+            gymsCreated.push(newGym);
           }
+          // @ts-expect-error TS(2588): Cannot assign to 'gymsPermited' because it is a co... Remove this comment to see the full error message
           gymsPermited = gymsPermited - gymsToDiscount; //se ajusta el numero de permitidos si se agrego alguno
         }
       }
@@ -146,16 +145,16 @@ async function postGyms(idUser, gyms) {
               newGym,
               { new: true }
             );
-            const newServices = await putService( //manda los servicios a crear o actualizar
-              idUser, 
-              gyms[i].id, 
+            await putService( //manda los servicios a crear o actualizar
+              idUser,
+              gyms[i].id,
               gyms[i].services
-              ); 
-            const newSMedia = await putGymsSocialMedia( //manda a la funcion para actualizar o crear las redes del gym
+            );
+            await putGymsSocialMedia( //manda a la funcion para actualizar o crear las redes del gym
               gyms[i].id,
               gyms[i].socialNetworks
             );
-            const newAddressGym = await putGymAddresses( //manda a la funcion para actualizar o crear la direccion del gym
+            await putGymAddresses( //manda a la funcion para actualizar o crear la direccion del gym
               gyms[i].id,
               gyms[i].address
             );
@@ -210,19 +209,19 @@ async function postGyms(idUser, gyms) {
       }
     } //termina la primera fase, aqui ya deben quedar guardados los cambios a gyms que ya tenia el partner seteados
 
-    
+
     let canCreate = gymsPermited - currentGymsNumber; //calcula cuantos gyms mas se pueden crear
 
     if (canCreate <= 0) { //entra aqui si ya no puede crear nuevos gyms
       if (gymsToAdd <= 0) { //checa si hay gyms por crear
         return {
           Ok: true,
-          msg:"Se actualizo la informacion satisfactoriamente"
+          msg: "Se actualizo la informacion satisfactoriamente"
         }; //si no tiene mas por agregar
       } else {
         return {
           Ok: false,
-          msg:"No puede crear mas gimnasios, revise o actualize su plan"
+          msg: "No puede crear mas gimnasios, revise o actualize su plan"
         }; //si quedaron sin agregar
       }
     } else if (canCreate < gymsToAdd) { //entra aqui si tiene mas gyms de los que puede crear
@@ -236,16 +235,16 @@ async function postGyms(idUser, gyms) {
       for (let i = 0; i < gymsToAdd; i++) { //en este bucle se crean  o actualizan los gyms que se permitieron
         const newGym = new Gyms(notEquals[i]);
         await newGym.save();
-        const newServices = await putService( //manda los servicios a crear o actualizar
-        idUser, 
-        newGym._id,
-        serviceToCreateNE[i]
-        ); 
-        const newGymAddress = await putGymAddresses( //manda las direcciones a crear o actualizar
+        await putService( //manda los servicios a crear o actualizar
+          idUser,
+          newGym._id,
+          serviceToCreateNE[i]
+        );
+        await putGymAddresses( //manda las direcciones a crear o actualizar
           newGym._id,
           addressesToCreateNE[i]
         );
-        const newSMedia = await putGymsSocialMedia( //manda las redes a crear o actualizar
+        await putGymsSocialMedia( //manda las redes a crear o actualizar
           newGym._id,
           sMediaToCreateNE[i]
         );
@@ -256,16 +255,16 @@ async function postGyms(idUser, gyms) {
       for (let i = 0; i < gymsToAdd; i++) { //en este bucle se crean o actualizan los gyms que se permitieron
         const newGym = new Gyms(notEquals[i]);
         await newGym.save();
-        const newServices = await putService( //manda los servicios a crear o actualizar
-        idUser, 
-        newGym._id,
-        serviceToCreateNE[i]
-        ); 
-        const newGymAddress = await putGymAddresses( //manda las direcciones a crear o actualizar
+        await putService( //manda los servicios a crear o actualizar
+          idUser,
+          newGym._id,
+          serviceToCreateNE[i]
+        );
+        await putGymAddresses( //manda las direcciones a crear o actualizar
           newGym._id,
           addressesToCreateNE[i]
         );
-        const newSMedia = await putGymsSocialMedia( //manda las redes a crear o actualizar
+        await putGymsSocialMedia( //manda las redes a crear o actualizar
           newGym._id,
           sMediaToCreateNE[i]
         );
@@ -273,8 +272,8 @@ async function postGyms(idUser, gyms) {
         gymsCreated.push(newGym);
       }
     } // cuando llega aqui ya se crearon y actualizaron todos los gyms que tenia permitidos, 
-      // falta setear los ids de los gyms al partner
-    
+    // falta setear los ids de los gyms al partner
+
     const newPartner = await Partner.findByIdAndUpdate( //aqui setea los ids de los gyms creados al partner
       userToAddGym.partner[0]._id,
       { gyms: gymsCreatedIds },
@@ -286,32 +285,32 @@ async function postGyms(idUser, gyms) {
       newPartner,
       gymsCreated
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 }
 
-const updateClientGym = async (req, res) => {
+export const updateClientGym = async (req: any, res: any) => {
   const { id, client } = req.body
   try {
-      const updatedGymClient = await Gims.findByIdAndUpdate(id, {
-         client: client
-      })      
-      console.log(updatedGymClient, 'esto es updateclient')
-      res.send(updatedGymClient)
-  } catch (error) {
-      console.log(error.message)
-      return error.message
+    const updatedGymClient = await Gims.findByIdAndUpdate(id, {
+      client: client
+    })
+    console.log(updatedGymClient, 'esto es updateclient')
+    res.send(updatedGymClient)
+  } catch (error: any) {
+    console.log(error.message)
+    return error.message
   }
 }
 
-async function saveGyms(id, data) {
-  let newServices = await data.map((s) => {
+export async function saveGyms(id: any, data: any) {
+  await data.map((s: any) => {
     let sToPush = Service.findById({ _id: s });
     return sToPush;
   });
-  let gymToUpdate = await Gims.updateOne(
+  await Gims.updateOne(
     {
       _id: id,
     },
@@ -327,46 +326,43 @@ async function saveGyms(id, data) {
   return response;
 }
 
-const updateFavGym = async (req, res) => {
-    const { id } = req.params
-    try {
+export const updateFavGym = async (req: any, res: any) => {
+  const { id } = req.params
+  try {
 
-        if (req.body.favourite) {
-            const userFav = await User.findById(req.body.idUser)
-            const gymFav = await Gims.findById(id)
-            if (userFav.favourite.includes(id)) {
+    if (req.body.favourite) {
+      const userFav: any = await User.findById(req.body.idUser)
+      const gymFav: any = await Gims.findById(id)
+      if (userFav.favourite.includes(id)) {
 
-                const userPull = await User.findByIdAndUpdate(req.body.idUser, { $pull: { favourite: id } }, { new: true })
-                const obj = { favourite: gymFav.favourite - 1 }
-                const gymfav = await Gims.findByIdAndUpdate(id, obj, { new: true })
+        const userPull = await User.findByIdAndUpdate(req.body.idUser, { $pull: { favourite: id } }, { new: true })
+        const obj = { favourite: gymFav.favourite - 1 }
+        const gymfav = await Gims.findByIdAndUpdate(id, obj, { new: true })
 
-                return res.status(200).json({
-                    ok: 'true',
-                    gym: gymfav,
-                    user: userPull,
-                })
-            } else {
-
-                const user = await User.findByIdAndUpdate(req.body.idUser, { $push: { favourite: id } }, { new: true })
-
-                const obj = { favourite: gymFav.favourite + 1 }
-                const gym = await Gims.findByIdAndUpdate(id, obj, { new: true })
-
-                return res.status(200).json({
-                    ok: 'true',
-                    gym,
-                    user,
-                })
-            }
-        }
-    } catch (error) {
-        console.log("error", error)
-        res.status(500).send({
-            ok: true,
-            msg: "no pudiste darle like"
+        return res.status(200).json({
+          ok: 'true',
+          gym: gymfav,
+          user: userPull,
         })
+      } else {
+
+        const user = await User.findByIdAndUpdate(req.body.idUser, { $push: { favourite: id } }, { new: true })
+
+        const obj = { favourite: gymFav.favourite + 1 }
+        const gym = await Gims.findByIdAndUpdate(id, obj, { new: true })
+
+        return res.status(200).json({
+          ok: 'true',
+          gym,
+          user,
+        })
+      }
     }
+  } catch (error) {
+    console.log("error", error)
+    res.status(500).send({
+      ok: true,
+      msg: "no pudiste darle like"
+    })
+  }
 }
-
-
-module.exports = { getAllGyms, postGyms, saveGyms, getGymById, getGymByName, updateFavGym, updateClientGym }

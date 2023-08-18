@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
-const Diseases = require('../models/Diseases')
-const DiseasesType = require('../models/DiseasesType')
+import DiseasesType from '../models/DiseasesType'
 
-async function run() {
+export async function run() {
     try {
         const newUser = await DiseasesType.create(
         {
@@ -77,22 +75,10 @@ async function run() {
         )
         return newUser
         console.log(newUser)
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message)
     }
 } 
 
 
-
-/* async function run(id) {
-    try {
-        const deleteDesease = await Diseases.findByIdAndDelete(id)
-        console.log(deleteDesease)
-    } catch (error) {
-        console.log(error.message)
-        return error.message
-    }
-} */
-
-
-module.exports = run
+export default run;

@@ -1,29 +1,28 @@
-const mongoose = require('mongoose');
-const mongoDB = require('mongodb');
+import { Schema, model, SchemaTypes, Types } from "mongoose";
 
-const shopCartSchema = new mongoose.Schema({
+const shopCartSchema = new Schema({
     user: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Users",
     },
     gyms: {
         type: Array,
-        of: mongoose.SchemaTypes.ObjectId,
+        of: SchemaTypes.ObjectId,
         ref: "Gyms",
     },
     services: {
         type: Array,
-        of: mongoose.SchemaTypes.ObjectId,
+        of: SchemaTypes.ObjectId,
         ref: "Services",
     },
     quantity: {
         type: Number
     },
     price: {
-        type: mongoDB.Decimal128
+        type: Types.Decimal128
     },
     total: {
-        type: mongoDB.Decimal128
+        type: Types.Decimal128
     },
     status: {
         type: String,        
@@ -42,4 +41,5 @@ const shopCartSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('ShopCart', shopCartSchema);
+const ShopCartModel = model("ShopCart", shopCartSchema);
+export default ShopCartModel;

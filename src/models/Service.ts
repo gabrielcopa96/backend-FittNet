@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const mongoDB = require('mongodb');
+import { Schema, model, Types } from "mongoose";
 
-const serviceSchema = new mongoose.Schema({
+const serviceSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -14,7 +13,7 @@ const serviceSchema = new mongoose.Schema({
     type: Number,   
   },
   price: {
-    type: mongoDB.Decimal128,
+    type: Types.Decimal128,
     required: true,
   },
   photo: {
@@ -27,4 +26,5 @@ const serviceSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Services", serviceSchema);
+const ServicesModel = model("Service", serviceSchema);
+export default ServicesModel;

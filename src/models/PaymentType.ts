@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from "mongoose"
 
-const paymentSchema = new mongoose.Schema({
+const paymentSchema = new Schema({
     paymentName: {
         type: String,
         required: true,
@@ -8,4 +8,5 @@ const paymentSchema = new mongoose.Schema({
     payType: [String]
 });
 
-module.exports = mongoose.model('PaymentType', paymentSchema);
+const PaymentType = model('PaymentType', paymentSchema);
+export default PaymentType;

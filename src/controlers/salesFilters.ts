@@ -1,18 +1,15 @@
-const mongoose = require("mongoose");
-const ShopCart = require("../models/ShopCart");
-const Gyms = require("../models/Gyms");
-const Service = require("../models/Service");
-const User = require("../models/User");
-const Partner = require("../models/Partner");
-const { getAllGyms } = require("./gyms")
+import ShopCart from "../models/ShopCart";
+import User from "../models/User";
+import Partner from "../models/Partner";
+import { getAllGyms } from "./gyms";
 
-const getPartnerSales = async (idUser) => {
+export const getPartnerSales = async (idUser: any) => {
   try {
     console.log("si entro a la funcion", idUser);
-    const userPartner = await User.findById(idUser);
-    const partner = await Partner.findById(userPartner.partner);
+    const userPartner: any = await User.findById(idUser);
+    const partner: any = await Partner.findById(userPartner.partner);
     const gyms = partner.gyms
-    const sales = [];
+    const sales: any = [];
     const salesPerGym = [];
     let totalSales = 0;
     let salesNumber = 0;
@@ -44,23 +41,22 @@ const getPartnerSales = async (idUser) => {
     };
     const response = {userId: idUser, partner: partner.name, salesNumber: salesNumber, totalSales: totalSales, salesPreGym: salesPerGym};
     return response
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 };
 
 
-const getAdminSales = async (idUser) => {
+export const getAdminSales = async (idUser: any) => {
   try {
-    // console.log("si entro a la funcion", idUser);
-    const userAdmin = await User.findById(idUser);
+    const userAdmin: any = await User.findById(idUser);
     if(userAdmin.type !== "admin"){
       return "No esta autorizado para ver esta informacion"
     };
     console.log("si llega aqui")
     const gyms = await getAllGyms();
-    const sales = [];
+    const sales: any = [];
     const salesPerGym = [];
     let totalSales = 0;
     let salesNumber = 0;
@@ -83,7 +79,7 @@ const getAdminSales = async (idUser) => {
           let salesCountPerGym = 0;
           for(let g = 0; g < sales[i].length; g++){
             salesCountPerGym++
-            if(!isNaN(sales[i][g].price)) gymCount = gymCount + parseFloat(sales[i][g].price); 
+            if(!isNaN((sales as any)[i][g].price)) gymCount = gymCount + parseFloat((sales as any)[i][g].price); 
             salesNumber = salesNumber + 1;
             if(!isNaN(sales[i][g].price)) totalSales = totalSales + parseFloat(sales[i][g].price);
           }
@@ -96,10 +92,8 @@ const getAdminSales = async (idUser) => {
     const response = {userId: idUser, admin: userAdmin.name, salesNumber: salesNumber, totalSales: totalSales, salesPreGym: salesPerGym};
     return response
     // return allgyms
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message);
     return error.message;
   }
 };
-
-module.exports = { getPartnerSales, getAdminSales };

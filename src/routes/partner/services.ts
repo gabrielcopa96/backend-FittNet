@@ -1,22 +1,8 @@
-const { Router } = require("express");
-const {
-  getAllGyms,
-  postGyms,
-  saveGyms,
-  getGymById,
-  getGymByName,
-} = require("../../controlers/gyms");
-
-const { putService } = require("../../controlers/services");
-
-const Gyms = require("../../models/Gyms");
-const Users = require("../../models/User");
-const Partner = require("../../models/Partner");
-const Service = require("../../models/Service");
+import { Router } from "express";
+import Gyms from "../../models/Gyms";
+import Service from "../../models/Service";
 
 const router = Router();
-
-
 
 //----------------------------------------------------------------------------
 // Para crear un solo servicio - envío el id del gym que lo crea y la info 
@@ -24,7 +10,7 @@ const router = Router();
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/services/createOneService/
 
-router.post('/createOneService/', async (req, res) => {
+router.post('/createOneService/', async (req: any, res: any) => {
   // gymId, dataNewService
   const { gymId, dataNewService } = req.body;
 
@@ -50,7 +36,7 @@ router.post('/createOneService/', async (req, res) => {
       return res.status(200).json({ message: 'Servicio creado' });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
     res.status(404).send({ error: error.message });
   }
@@ -63,32 +49,27 @@ router.post('/createOneService/', async (req, res) => {
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/services/editOneService/
 
-router.put('/editOneService/', async (req, res) => {
+router.put('/editOneService/', async (req: any, res: any) => {
   console.log(req.body, 'edit One Service')
   // serviceId, newDataService 
   const { serviceId, newDataService } = req.body;
   let idService = serviceId.serviceId;
 
-  let editeService;
-
   try {
     // console.log(idService, 'el id del service a editar')
     // console.log(newDataService, ' la data del service a editar')
 
-    editeService = await Service.findByIdAndUpdate(idService, 
+    await Service.findByIdAndUpdate(idService, 
       newDataService, {new: true})
   
     // console.log(editeService, 'luego del update')
 
 
     res.status(200).json({message: 'Servicio actualizado'});
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     res.status(404).send({ error: error.message });
   }
 })
 
-
-
-
-module.exports = router;
+export default router;

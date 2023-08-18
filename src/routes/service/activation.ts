@@ -1,11 +1,9 @@
-const { Router } = require('express');
-const Users = require('../../models/User')
-const bcrypt = require('bcrypt');
-const { isValidObjectId } = require('../../controlers/users')
-
+import { Router } from 'express';
+import Users from '../../models/User';
+import bcrypt from 'bcrypt';
+import { isValidObjectId } from '../../controlers/users';
 
 const router = Router();
-
 
 //-----------------------------------------------------------------------
 // Esta ruta responde cuando necesito activar una cuenta recién creada y es
@@ -13,19 +11,19 @@ const router = Router();
 // validación de email, en el cual va un link para llamarla.
 //------------------------------------------------------------------------
 
-router.get('/activation/:userId/:secretToken', async (req, res, next) => {
+router.get('/activation/:userId/:secretToken', async (req: any, res: any, next: any) => {
   let { userId, secretToken } = req.params;
   // console.log(req.params, ' el id y el secret en activation')
 
   try {
       // let user = await Users.find({_id: userId});
-      let user = await Users.findById(userId);
+      let user: any = await Users.findById(userId);
 
       // console.log(user, 'paso1')
 
       // if (user.length && user[0].secretToken === secretToken) {
       if (user._id && user.secretToken === secretToken) {
-        let activationToken = await Users.findByIdAndUpdate(userId, {active: true});
+        let activationToken: any = await Users.findByIdAndUpdate(userId, {active: true});
         // console.log(activationToken, 'paso2')
 
         if (activationToken.name) {
@@ -37,7 +35,7 @@ router.get('/activation/:userId/:secretToken', async (req, res, next) => {
       }
       res.send('Usuario no encontrado');
   
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
       res.status(400).send('Ocurrió un error durante la activación');     
     }
@@ -49,7 +47,7 @@ router.get('/activation/:userId/:secretToken', async (req, res, next) => {
 // cuenta en la app. El estado active del usuario pasa a ser "false"
 //-------------------------------------------------------------------------
 
-router.put('/deleteuseraccount', async (req, res, next) => {
+router.put('/deleteuseraccount', async (req: any, res: any, next: any) => {
     let { userId, password } = req.body;
     console.log('Put a delete user account')
 
@@ -97,4 +95,4 @@ router.put('/deleteuseraccount', async (req, res, next) => {
   })
 
 
-module.exports = router;
+export default router;

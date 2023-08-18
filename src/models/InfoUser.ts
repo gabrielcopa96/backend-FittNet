@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const { regWord, regEmail } = require('../controlers/regExes')
+import { Schema, model, SchemaTypes } from "mongoose";
+import { regWord, regEmail } from '../controlers/regExes';
 
-const infoUserSchema = new mongoose.Schema({
+const infoUserSchema = new Schema({
     name: {
         type: String,
         required: true,
         validate: {
-            validator: v => regWord.test(v),
-            message: props => `${props.value} is not a valid Name`
+            validator: (v: any) => regWord.test(v),
+            message: (props: any) => `${props.value} is not a valid Name`
         }
     },
     lastName: {
@@ -19,8 +19,8 @@ const infoUserSchema = new mongoose.Schema({
         required: true,
         lowercase: true,
         validate: {
-            validator: v => regEmail.test(v),
-            message: props => `${props.value} is not a valid email address`
+            validator: (v: any) => regEmail.test(v),
+            message: (props: any) => `${props.value} is not a valid email address`
         }
     },
     phone: {
@@ -36,7 +36,7 @@ const infoUserSchema = new mongoose.Schema({
         type: String,
     },
     diseases: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Diseases"
     },
     emergenciCallTo: { //contacto de emergencias
@@ -46,7 +46,7 @@ const infoUserSchema = new mongoose.Schema({
         type: Number,
     },
     address: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Address"
     },
     createdAt: {
@@ -62,4 +62,5 @@ const infoUserSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('InfoUser', infoUserSchema)
+const InfoUserModel = model('InfoUser', infoUserSchema);
+export default InfoUserModel;

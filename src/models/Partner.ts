@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
-const { regEmail, regWord, regCBU, regCUIL } = require('../controlers/regExes');
+import { Schema, model, SchemaTypes } from "mongoose";
+import { regEmail, regWord, regCBU, regCUIL } from '../controlers/regExes';
 
-const partnerSchema = new mongoose.Schema({
+const partnerSchema = new Schema({
   name: {
     type: String,
     required: true,
     validate: {
-      validator: v => regWord.test(v),
-      message: props => `${props.value} is not a valid Name`
+      validator: (v: any) => regWord.test(v),
+      message: (props: any) => `${props.value} is not a valid Name`
   }
   },
   lastName: {
     type: String,
     validate: {
-      validator: v => regWord.test(v),
-      message: props => `${props.value} is not a valid Name`
+      validator: (v: any) => regWord.test(v),
+      message: (props: any) => `${props.value} is not a valid Name`
   }
   },
   email: {
@@ -22,43 +22,43 @@ const partnerSchema = new mongoose.Schema({
     required: true,
     lowercase: true,
     validate: {
-      validator: (e) => regEmail.test(e),
-      message: (e) => `${e.value} is not a valid email address`,
+      validator: (e: any) => regEmail.test(e),
+      message: (e: any) => `${e.value} is not a valid email address`,
     },
   },
   phone: {
     type: Number,
   },
   planType: {
-    type: mongoose.SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: "Plan",
   },
   cbu: {
     type: String,
     validate: {
-      validator: (e) => regCBU.test(e),
-      message: (e) => `${e.value} is not a valid CBU`,
+      validator: (e: any) => regCBU.test(e),
+      message: (e: any) => `${e.value} is not a valid CBU`,
     },
   },
   cuil: {
     type: String,
     validate: {
-      validator: (e) => regCUIL.test(e),
-      message: (e) => `${e.value} is not a valid CUIL`,
+      validator: (e: any) => regCUIL.test(e),
+      message: (e: any) => `${e.value} is not a valid CUIL`,
     },
   },
   socialNetworks: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "SocialMedia",
   },
   gyms: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "Gyms",
   },
   category: {
-    type: mongoose.SchemaTypes.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: "Category",
   },
   userActive: {
@@ -66,7 +66,7 @@ const partnerSchema = new mongoose.Schema({
   },
   paymentMethods: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "PaymentType",
   },
   paidOut: {
@@ -79,14 +79,15 @@ const partnerSchema = new mongoose.Schema({
   },
   incomes: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "ShopCart"
   },
   payments: {
     type: Array,
-    of: mongoose.SchemaTypes.ObjectId,
+    of: SchemaTypes.ObjectId,
     ref: "Payments"
   }
 });
 
-module.exports = mongoose.model("Partner", partnerSchema);
+const PartnerModel = model("Partner", partnerSchema);
+export default PartnerModel;

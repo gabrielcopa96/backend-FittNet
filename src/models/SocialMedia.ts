@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from "mongoose";
 
-const socialMediaSchema = new mongoose.Schema({
+const socialMediaSchema = new Schema({
     socialMedia: {
         type: String,
         required: true,
@@ -11,4 +11,5 @@ const socialMediaSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('SocialMedia', socialMediaSchema);
+const SocialMediaModel = model("SocialMedia", socialMediaSchema);
+export default SocialMediaModel;

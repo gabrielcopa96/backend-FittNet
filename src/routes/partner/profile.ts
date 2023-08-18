@@ -1,6 +1,9 @@
-const router = require("express").Router();
+import { Router } from 'express';
 
-const { getPartner, putPartner, getAllPartners } = require("../../controlers/partners");
+import { getPartner, putPartner, getAllPartners } from "../../controlers/partners";
+import { deleteUser } from '../../controlers/users';
+
+const router = Router();
 
 router.get("/all", getAllPartners);
 router.get("/:id", getPartner);
@@ -8,11 +11,11 @@ router.put("/edit/:id", putPartner);
 
 //---- CUIDADO OJO ---- ruta para borrar usuarios
 
-router.delete("/delete/:id", async (req, res, next) => {
+router.delete("/delete/:id", async (req: any, res: any, next: any) => {
   const { id } = req.params;
   const response = deleteUser(id);
   console.log(response);
   res.send(response);
 });
 
-module.exports = router;
+export default router;

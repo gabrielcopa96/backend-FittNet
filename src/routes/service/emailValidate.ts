@@ -1,10 +1,11 @@
-const { Router } = require('express');
-const nodemailer = require("nodemailer");
-const USER_ACCOUNT = process.env.USER_ACCOUNT;
-const PASS_ACCOUNT = process.env.PASS_ACCOUNT;
+import { Router } from 'express';
+import nodemailer from "nodemailer";
+
+const USER_ACCOUNT = process.env.USER_ACCOUNT as string;
+const PASS_ACCOUNT = process.env.PASS_ACCOUNT as string;
 const CORS_URL = process.env.CORS_URL || 'http://localhost:3000';
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     secure: true,
@@ -20,17 +21,14 @@ transporter.verify(()=>{
   console.log('Ready for send emails')
 })
 
-
 const router = Router();
-
-
 
 //-------------------------------------------------------------------------------
 // Esta ruta envía un correo electrónico de verificación para la validación 
 // del email registrado (validar para activar la cuenta)
 //-------------------------------------------------------------------------------
 
-router.get('/email/activation/:userId/:secretToken/:userName/', async (req, res, next) => {
+router.get('/email/activation/:userId/:secretToken/:userName/', async (req: any, res: any, next: any) => {
   let { userId, secretToken, userName } = req.params;
   // Recordar que userName es un email
   // console.log(req.params, 'el userID, el sercretToken y el userName')
@@ -58,7 +56,7 @@ router.get('/email/activation/:userId/:secretToken/:userName/', async (req, res,
 
 })
 
-router.get('/email/recovey/:userId/:secretToken/:userName', async (req, res, next) => {
+router.get('/email/recovey/:userId/:secretToken/:userName', async (req: any, res: any, next: any) => {
   let { userId, secretToken, userName} = req.params;
   // Recordar que userName es un email
   // console.log(req.params, 'el userID, el sercretToken y el userName')
@@ -102,5 +100,4 @@ router.get('/email/recovey/:userId/:secretToken/:userName', async (req, res, nex
 //   }
 // }
 
-module.exports = router;
-    
+export default router;    

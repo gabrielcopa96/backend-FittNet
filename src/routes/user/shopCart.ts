@@ -1,10 +1,10 @@
-const router = require("express").Router();
-const {getShopCart, postCart, updateCart} = require ('../../controlers/ShopCart')
+import { Router } from 'express';
+import { getShopCart, postCart, updateCart} from '../../controlers/ShopCart';
 
+const router = Router();
 
 router.get('/', getShopCart)
 router.post('/', postCart)
 router.put('/', updateCart)
 
-
-module.exports = router;
+export default router;

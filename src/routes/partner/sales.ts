@@ -1,5 +1,7 @@
-const { Router } = require("express");
-const { getPartnerSales, getAdminSales } = require("../../controlers/salesFilters");
+import { Router } from "express";
+
+import { getPartnerSales, getAdminSales } from "../../controlers/salesFilters";
+
 const router = Router();
 
 //----------------------------------------------------------------------------
@@ -7,13 +9,14 @@ const router = Router();
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/sales/:id
 
-router.get('/:id', async (req, res) => { 
+router.get('/:id', async (req: any, res: any) => { 
     try {
         const { id } = req.params;
         console.log(id, "el id desde la ruta")
         const response = await getPartnerSales(id);      
         res.status(200).send(response);
     } catch (error) {
+        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         res.status(404).send({ error: error.message });
     }
 });
@@ -23,14 +26,15 @@ router.get('/:id', async (req, res) => {
 //----------------------------------------------------------------------------
 // http://localhost:3001/api/partner/sales/:id
   
-router.get('/allsales/:id', async (req, res) => { 
+router.get('/allsales/:id', async (req: any, res: any) => { 
     try {
         const { id } = req.params;
         const response = await getAdminSales(id);      
         res.status(200).send(response);
     } catch (error) {
+        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         res.status(404).send({ error: error.message });
     }
 });
 
-module.exports = router;
+export default router;

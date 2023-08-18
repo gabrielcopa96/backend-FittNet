@@ -1,21 +1,18 @@
-const mongoose = require("mongoose");
-const User = require("../models/User");
-const Partner = require("../models/Partner");
-const Plan = require("../models/Plan");
-const SocialMedia = require("../models/SocialMedia");
-const Service = require("../models/Service");
-const Address = require("../models/Address");
-const Gyms = require("../models/Gyms");
+import User from "../models/User";
+import Partner from "../models/Partner";
+import SocialMedia from "../models/SocialMedia";
+import Address from "../models/Address";
+import Gyms from "../models/Gyms";
 
 
 
-const putSocialMedia = async (idUser, socialNetworks) => {
+export const putSocialMedia = async (idUser: any, socialNetworks: any) => {
   try {
-    const userToAdd = await User.findById(idUser).populate("partner");
+    const userToAdd: any = await User.findById(idUser).populate("partner");
     const idPartner = userToAdd.partner[0]._id;
-    const sMediaUser = userToAdd.partner[0].socialNetworks;
+    // const sMediaUser = userToAdd.partner[0].socialNetworks;
 
-    let newSocialNetworks = [];
+    let newSocialNetworks: any = [];
     if (socialNetworks && socialNetworks.length > 0) {
       for (let i = 0; i < socialNetworks.length; i++) {
         if (!socialNetworks[i].id) {
@@ -32,7 +29,7 @@ const putSocialMedia = async (idUser, socialNetworks) => {
             socialMedia: socialNetworks[i].socialMedia,
             userSM: socialNetworks[i].userSM,
           };
-          const smUpdated = await SocialMedia.findByIdAndUpdate(
+          await SocialMedia.findByIdAndUpdate(
             socialNetworks[i].id,
             newSM,
             { new: true }
@@ -40,22 +37,22 @@ const putSocialMedia = async (idUser, socialNetworks) => {
         }
       }
     }
-    const partnerUpdated = await Partner.findByIdAndUpdate(
+    await Partner.findByIdAndUpdate(
       idPartner,
       { socialNetworks: newSocialNetworks },
       { new: true }
     );
     return "Redes Actualizadas";
-  } catch (error) {
+  } catch (error: any) {
     return error.message;
   }
 };
 
-const putGymsSocialMedia = async (idGym, socialNetworks) => {
+export const putGymsSocialMedia = async (idGym: any, socialNetworks: any) => {
   try {
-    const gymToAdd = await Gyms.findById(idGym);
+    await Gyms.findById(idGym);
 
-    let newSocialNetworks = [];
+    let newSocialNetworks: any = [];
     if (socialNetworks && socialNetworks.length > 0) {
       for (let i = 0; i < socialNetworks.length; i++) {
         if (!socialNetworks[i].id) {
@@ -72,7 +69,7 @@ const putGymsSocialMedia = async (idGym, socialNetworks) => {
             socialMedia: socialNetworks[i].socialMedia,
             userSM: socialNetworks[i].userSM,
           };
-          const smUpdated = await SocialMedia.findByIdAndUpdate(
+          await SocialMedia.findByIdAndUpdate(
             socialNetworks[i].id,
             newSM,
             { new: true }
@@ -80,20 +77,20 @@ const putGymsSocialMedia = async (idGym, socialNetworks) => {
         }
       }
     }
-    const gymUpdated = await Gyms.findByIdAndUpdate(
+    await Gyms.findByIdAndUpdate(
       idGym,
       { socialNetworks: newSocialNetworks },
       { new: true }
     );
     return "Redes Actualizadas";
-  } catch (error) {
+  } catch (error: any) {
     return error.message;
   }
 };
 
-const putGymAddresses = async (idGym, gymAddress) => {
+export const putGymAddresses = async (idGym: any, gymAddress: any) => {
   try {
-    const gymToAdd = await Gyms.findById(idGym);
+    const gymToAdd: any = await Gyms.findById(idGym);
     let addressId = gymToAdd.address ? gymToAdd.address : "";
 
     if (!addressId || addressId === "") {
@@ -102,7 +99,7 @@ const putGymAddresses = async (idGym, gymAddress) => {
       addressId = newAddress._id;
     } else {
       delete gymAddress.id
-      const addressUpdated = await Address.findByIdAndUpdate(
+      await Address.findByIdAndUpdate(
         addressId,
         gymAddress,
         { new: true }
@@ -115,9 +112,7 @@ const putGymAddresses = async (idGym, gymAddress) => {
     );
 
     return gymUpdated;
-  } catch (error) {
+  } catch (error: any) {
     return error.message;
   }
 };
-
-module.exports = { putSocialMedia, putGymAddresses, putGymsSocialMedia };

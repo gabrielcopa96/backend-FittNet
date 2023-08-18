@@ -1,35 +1,25 @@
-const mongoose = require("mongoose");
-const Gims = require("../models/Gyms");
-const Address = require("../models/Address");
-const Service = require("../models/Service");
-const User = require("../models/User");
-const Gyms = require("../models/Gyms");
-const Partner = require("../models/Partner");
-const Plan = require("../models/Plan");
-const { putGymAddresses, putGymsSocialMedia } = require("./helpers");
+import Service from "../models/Service";
+import User from "../models/User";
+import Gyms from "../models/Gyms";
+import Partner from "../models/Partner";
 
-async function getAllServices() {}
+export async function getServiceDetail() { }
 
-async function getServiceDetail() {}
-
-async function putService(idUser, idGym, gymServices) {
+export async function putService(idUser: any, idGym: any, gymServices: any) {
   try {
-    const userToAdd = await User.findById(idUser); //trae el usuario
-    const partnerToAdd = await Partner.findById(
+    const userToAdd: any = await User.findById(idUser); //trae el usuario
+    const partnerToAdd: any = await Partner.findById(
       userToAdd.partner[0]._id
     ).populate("planType"); //trae el partner con su plan
-    const gymToAdd = await Gyms.findById(idGym); //trae el gym
+    const gymToAdd: any = await Gyms.findById(idGym); //trae el gym
 
-    const servicesPermited = partnerToAdd.planType.servicePerGym; //guarda los servicios permitidos
+    let servicesPermited: any = partnerToAdd.planType.servicePerGym; //guarda los servicios permitidos
     const currentServicesNumber = gymToAdd.services.length; //guarda numero de servicios actualmente en el gym
     const servicesComingToAdd = gymServices.length; //guarda cuantos servicios vienen para guardar o crear
 
     let notEquals = [];
     let servicesCreatedIds = [];
     let servicesCreated = [];
-    let serviceToCreateNE = [];
-    let addressesToCreateNE = [];
-    let sMediaToCreateNE = [];
     let currentservices = 0;
     let servicesToAdd = 0;
     let servicesToDiscount = 0;
@@ -172,9 +162,7 @@ async function putService(idUser, idGym, gymServices) {
       msg: "Servicios creados o editados correctamente",
       newGym,
     };
-  } catch (error) {
+  } catch (error: any) {
     return error.message;
   }
 }
-
-module.exports = { putService, getServiceDetail, getAllServices };
