@@ -1,12 +1,22 @@
-import server from './src/app';
-import { conn } from './src/db';
+import { conn } from './src/app/database/db';
+import { express_init, passport_init, routes_init } from './src/app/init';
 
-const PORT = process.env.PORT || 3001
 
-conn.then(() => {
-  server.listen(PORT, async () => {
-    console.log(`Server listening at port ${PORT}`);
-  });
-}).catch((err: any) => {
-  console.log("not connection database", err);
-})
+(async () => {
+  try {
+    
+    await conn;
+    console.log("connection database");
+    /* ------------ INIT EXPRESS ------------ */
+    express_init.ExpressInit();
+    /* ------------ INIT ROUTES ------------- */
+    routes_init();
+    /* ------------ INIT PASSPORT ----------- */
+    passport_init();
+
+  } catch (error: any) {
+
+    console.log("not connection");
+    
+  }
+})();
