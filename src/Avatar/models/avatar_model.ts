@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { AvatarI } from "../interfaces/avatar_interface";
 
-const avatarSchema = new Schema({
+const avatarSchema = new Schema<AvatarI>({
     avatarName: {
         type: String,
         required: true,
@@ -10,9 +11,10 @@ const avatarSchema = new Schema({
         required: true,
     },
     features: {
-        type: Array,
-        of: String,
+        type: [String],
     }
+}, {
+    versionKey: false,
 });
 
 const AvatarModel = model('Avatar', avatarSchema);

@@ -11,7 +11,7 @@ class ExpressInitClass {
 
     readonly server: Express = express();
 
-    constructor() { }
+    constructor() {}
 
     public ExpressInit(): void {
 
