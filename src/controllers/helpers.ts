@@ -1,8 +1,9 @@
 import User from "../models/User";
 import Partner from "../models/Partner";
 import SocialMedia from "../models/SocialMedia";
-import Address from "../models/Address";
+// import Address from "../models/Address";
 import Gyms from "../models/Gyms";
+import Address_model from "../Address/models/address_model";
 
 
 
@@ -94,12 +95,12 @@ export const putGymAddresses = async (idGym: any, gymAddress: any) => {
     let addressId = gymToAdd.address ? gymToAdd.address : "";
 
     if (!addressId || addressId === "") {
-      const newAddress = new Address(gymAddress);
+      const newAddress = new Address_model(gymAddress);
       await newAddress.save();
       addressId = newAddress._id;
     } else {
       delete gymAddress.id
-      await Address.findByIdAndUpdate(
+      await Address_model.findByIdAndUpdate(
         addressId,
         gymAddress,
         { new: true }

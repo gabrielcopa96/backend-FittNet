@@ -1,5 +1,5 @@
-import { conn } from './src/app/database/db';
-import { express_init, passport_init, routes_init } from './src/app/init';
+import { conn } from './src/configs/database/db';
+import { express_init, passport_init, routes_init } from './src/configs/init';
 
 
 (async () => {
